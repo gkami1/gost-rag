@@ -1,0 +1,72 @@
+[project]
+name = "gost-rag"
+version = "0.1.0"
+description = "Open-source RAG assistant over Russian GOST standards and mechanical engineering documentation"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = { file = "LICENSE" }
+
+dependencies = [
+    # orchestration + generation
+    "langgraph>=0.2.60",
+    "langchain-core>=0.3.30",
+    "langchain-openai>=0.3.0",
+    "tenacity>=9.0.0",
+    # index
+    "qdrant-client>=1.12.0",
+    # embeddings / rerank
+    "FlagEmbedding>=1.3.2",
+    "torch>=2.4.0",
+    "transformers>=4.44.0",
+    # ingestion
+    "pymupdf>=1.24.0",
+    "pdfplumber>=0.11.0",
+    "python-docx>=1.1.2",
+    "pytesseract>=0.3.13",
+    "pillow>=10.4.0",
+    "opencv-python-headless>=4.10.0",
+    "numpy>=1.26.0",
+    # api / ui
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "jinja2>=3.1.4",
+    "sse-starlette>=2.1.3",
+    # config / misc
+    "pydantic>=2.9.0",
+    "pydantic-settings>=2.6.0",
+    "python-dotenv>=1.0.1",
+    "pyyaml>=6.0.2",
+    "structlog>=24.4.0",
+    "typer>=0.15.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "ruff>=0.8.0",
+]
+
+[project.scripts]
+gost-ingest = "gost_rag.ingest.pipeline:app"
+gost-query = "gost_rag.retrieval.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["gost_rag"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+ignore = ["B008", "RUF001", "RUF002", "RUF003"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["ignore::DeprecationWarning"]

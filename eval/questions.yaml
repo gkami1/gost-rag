@@ -1,0 +1,57 @@
+# Оценочный набор.
+#
+# Каждый вопрос указывает эталонный документ (`gold_designation`) и, если
+# известно, пункт (`gold_section`). Пункт не обязателен: recall по документу
+# считается всегда, по пункту — только там, где он задан.
+#
+# Вопросы `out_of_corpus: true` описывают то, чего в корпусе заведомо нет.
+# На них правильный ответ — отказ; они меряют, не начинает ли система выдумывать.
+#
+# ЭТО ШАБЛОН. Замените обозначения на те, что реально загружены в ваш корпус,
+# иначе метрики будут нулевыми не из-за качества поиска, а из-за пустого эталона.
+
+questions:
+  - id: bend-radius-3mm
+    question: Какой минимальный радиус гибки у листовой стали толщиной 3 мм?
+    gold_designation: ГОСТ 17040-71
+    gold_section: null
+    note: типовой вопрос по гибке листового металла
+
+  - id: hole-m10-designation
+    question: Какое обозначение указать для стандартного сквозного отверстия под болт М10?
+    gold_designation: ГОСТ 11284-75
+    gold_section: null
+    note: сквозные отверстия под крепёж
+
+  - id: surface-roughness-marking
+    question: Как обозначается шероховатость поверхности на чертеже?
+    gold_designation: ГОСТ 2.309-73
+    gold_section: null
+
+  - id: thread-tolerance-m10
+    question: Какое поле допуска резьбы М10 принимается по умолчанию?
+    gold_designation: ГОСТ 16093-2004
+    gold_section: null
+
+  - id: drawing-formats
+    question: Какие основные форматы чертежей предусмотрены стандартом?
+    gold_designation: ГОСТ 2.301-68
+    gold_section: null
+
+  - id: steel-st3-composition
+    question: Каков химический состав стали Ст3сп?
+    gold_designation: ГОСТ 380-2005
+    gold_section: null
+
+  # ---- вопросы вне корпуса: ожидается отказ ----
+  - id: oos-nonexistent-gost
+    question: Что написано в ГОСТ 99999-77 про допуски?
+    out_of_corpus: true
+
+  - id: oos-unrelated-domain
+    question: Какая ставка налога на прибыль организаций в России?
+    out_of_corpus: true
+
+  - id: oos-cooking
+    question: Сколько минут варить пельмени?
+    out_of_corpus: true

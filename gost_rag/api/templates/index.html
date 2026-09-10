@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ГОСТ-RAG — справочник по стандартам</title>
+  <link rel="stylesheet" href="/static/app.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <h1>ГОСТ-RAG</h1>
+      <p class="sub">Поиск и ответы по ГОСТам и машиностроительной документации</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <form id="ask" autocomplete="off">
+      <textarea id="q" rows="3" required
+        placeholder="Например: какой радиус гибки у листовой стали толщиной 3 мм по ГОСТ?"></textarea>
+      <div class="row">
+        <button type="submit" id="send">Спросить</button>
+        <button type="button" id="reset" class="ghost">Новый диалог</button>
+        <span id="status" class="status" aria-live="polite"></span>
+      </div>
+    </form>
+
+    <section id="answer-card" class="card" hidden>
+      <h2>Ответ</h2>
+      <div id="answer" class="answer"></div>
+    </section>
+
+    <section id="sources-card" class="card" hidden>
+      <h2>Источники <span id="src-count" class="count"></span></h2>
+      <ol id="sources" class="sources"></ol>
+    </section>
+
+    <p class="disclaimer">
+      Ответ сформирован автоматически и не заменяет официальный текст стандарта.
+      Проверяйте актуальность редакции перед применением.
+    </p>
+  </main>
+
+  <footer class="wrap foot">
+    <span>Модель: {{ provider }} · {{ model }}</span>
+    <a href="/api/documents">Корпус</a>
+    <a href="/healthz">Состояние</a>
+  </footer>
+
+  <script>
+    const form = document.getElementById("ask");
+    const input = document.getElementById("q");
+    const answerEl = document.getElementById("answer");
+    const answerCard = document.getElementById("answer-card");
+    const sourcesEl = document.getElementById("sources");
+    const sourcesCard = document.getElementById("sources-card");
+    const statusEl = document.getElementById("status");
+    const sendBtn = document.getElementById("send");
+    const countEl = document.getElementById("src-count");
+
+    let threadId = null;
+
+    document.getElementById("reset").addEventListener("click", () => {
+      threadId = null;
+      answerEl.textContent = "";
+      sourcesEl.innerHTML = "";
+      answerCard.hidden = true;
+      sourcesCard.hidden = true;
+      statusEl.textContent = "Начат новый диалог";
+      input.focus();
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const question = input.value.trim();
+      if (!question) return;
+
+      sendBtn.disabled = true;
+      statusEl.textContent = "Ищу в документах…";
+      answerEl.textContent = "";
+      sourcesEl.innerHTML = "";
+      answerCard.hidden = false;
+      sourcesCard.hidden = true;
+
+      try {
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question, thread_id: threadId }),
+        });
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        await readStream(response.body.getReader());
+      } catch (err) {
+        statusEl.textContent = "Ошибка: " + err.message;
+      } finally {
+        sendBtn.disabled = false;
+      }
+    });
+
+    // Разбор SSE вручную: fetch+POST нельзя отдать EventSource, он умеет только GET.
+    async function readStream(reader) {
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+
+        let split;
+        while ((split = buffer.indexOf("\n\n")) !== -1) {
+          const raw = buffer.slice(0, split);
+          buffer = buffer.slice(split + 2);
+          handleEvent(parseEvent(raw));
+        }
+      }
+    }
+
+    function parseEvent(raw) {
+      let name = "message";
+      const dataLines = [];
+      for (const line of raw.split("\n")) {
+        if (line.startsWith("event:")) name = line.slice(6).trim();
+        else if (line.startsWith("data:")) dataLines.push(line.slice(5).trim());
+      }
+      let data = {};
+      try { data = JSON.parse(dataLines.join("\n")); } catch (_) {}
+      return { name, data };
+    }
+
+    function handleEvent({ name, data }) {
+      if (name === "start") {
+        threadId = data.thread_id;
+      } else if (name === "sources") {
+        renderSources(data.sources || []);
+        statusEl.textContent = data.sources.length
+          ? "Формулирую ответ…"
+          : "Подходящих фрагментов не найдено";
+      } else if (name === "token") {
+        answerEl.textContent += data.text;
+      } else if (name === "final") {
+        // Проверенный текст может отличаться от потокового: невалидные ссылки вырезаны.
+        answerEl.textContent = data.answer;
+        highlightUsed(data.citations || []);
+        statusEl.textContent = data.insufficient ? "Ответ не найден в корпусе" : "Готово";
+      } else if (name === "error") {
+        statusEl.textContent = data.message;
+      } else if (name === "done") {
+        input.value = "";
+        input.focus();
+      }
+    }
+
+    function renderSources(sources) {
+      sourcesEl.innerHTML = "";
+      countEl.textContent = sources.length ? "(" + sources.length + ")" : "";
+      sourcesCard.hidden = sources.length === 0;
+
+      for (const src of sources) {
+        const li = document.createElement("li");
+        li.className = "source";
+        li.dataset.marker = src.marker;
+
+        const head = document.createElement("div");
+        head.className = "src-head";
+
+        const marker = document.createElement("span");
+        marker.className = "marker";
+        marker.textContent = src.marker;
+        head.appendChild(marker);
+
+        const label = document.createElement("span");
+        label.className = "label";
+        label.textContent = src.label;
+        head.appendChild(label);
+
+        if (src.status === "отменён" || src.status === "заменён") {
+          const badge = document.createElement("span");
+          badge.className = "badge warn";
+          badge.textContent = src.replaced_by
+            ? "заменён на " + src.replaced_by
+            : "не действует";
+          head.appendChild(badge);
+        }
+        if (src.ocr) {
+          const badge = document.createElement("span");
+          badge.className = "badge";
+          badge.textContent = "распознано OCR";
+          head.appendChild(badge);
+        }
+
+        li.appendChild(head);
+
+        if (src.title) {
+          const title = document.createElement("div");
+          title.className = "src-title";
+          title.textContent = src.title;
+          li.appendChild(title);
+        }
+
+        const details = document.createElement("details");
+        const summary = document.createElement("summary");
+        summary.textContent = "Показать фрагмент";
+        details.appendChild(summary);
+
+        const pre = document.createElement("pre");
+        pre.className = "chunk";
+        pre.textContent = src.text;
+        details.appendChild(pre);
+
+        if (src.doc_id) {
+          const link = document.createElement("a");
+          link.className = "pdf";
+          link.href = "/api/source/" + encodeURIComponent(src.doc_id) +
+                      "?page=" + (src.page_start || 1) + "#page=" + (src.page_start || 1);
+          link.target = "_blank";
+          link.rel = "noopener";
+          link.textContent = "Открыть PDF, стр. " + (src.page_start || 1);
+          details.appendChild(link);
+        }
+
+        li.appendChild(details);
+        sourcesEl.appendChild(li);
+      }
+    }
+
+    function highlightUsed(citations) {
+      const used = new Set(citations.map((c) => c.marker));
+      for (const li of sourcesEl.querySelectorAll(".source")) {
+        li.classList.toggle("unused", used.size > 0 && !used.has(li.dataset.marker));
+      }
+    }
+  </script>
+</body>
+</html>
