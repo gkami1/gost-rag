@@ -55,6 +55,39 @@ def test_extract_clause_rejects_plain_text_and_bare_numbers():
     assert extract_clause("3.2.1") is None  # без текста это, скорее всего, номер в таблице
 
 
+def test_extract_clause_rejects_table_rows():
+    """Строки таблиц ГОСТ 24705-2004: начинаются с числа, но пунктами не являются.
+
+    Взято из реального индекса: пока такие строки считались пунктами, чанк
+    получал `section="6"` от номера строки, и цитата ссылалась на пункт, в
+    котором этого текста нет.
+    """
+    assert extract_clause("6 68,103 65,505 64,639 4 69,402") is None
+    assert extract_clause("1 5,350 4,917 4,773 6 0,75 5,513") is None
+    assert extract_clause("24 1,5 23,026 22,376 22,160") is None
+
+
+def test_extract_clause_ignores_units_without_text():
+    # «мм» — единица измерения в строке таблицы, а не название пункта.
+    assert extract_clause("6 68,103 мм") is None
+
+
+def test_extract_clause_accepts_short_but_real_headings():
+    assert extract_clause("7 Маркировка") == "7"
+    assert extract_clause("2 Нормативные ссылки") == "2"
+
+
+def test_extract_clause_rejects_absurdly_long_numbers():
+    """Искажённый текстовый слой таблицы ГОСТ 5264-80 дал «пункт» 1777771."""
+    assert extract_clause("1777771 hxW T i (УУа.И.) 11 +1,0") is None
+
+
+def test_extract_clause_keeps_two_digit_clauses():
+    # Пункты 11 и 16 — настоящие, в корпусе они действительно встречаются.
+    assert extract_clause("11. (Исключен, Изм. № 1).") == "11"
+    assert extract_clause("16. При подготовке кромок предельные отклонения") == "16"
+
+
 def test_clause_line_is_not_treated_as_running_header():
     # Даже если нумерованный пункт повторяется на каждой странице, вырезать его нельзя.
     pages = [

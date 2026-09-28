@@ -3,17 +3,26 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Iterator
 
 import pytest
 from fastapi.testclient import TestClient
 
 from gost_rag.api import main as api_main
+from gost_rag.config import get_settings
 from gost_rag.models import RetrievedChunk
 
 
 @pytest.fixture
-def client() -> TestClient:
-    return TestClient(api_main.app)
+def client(tmp_path, monkeypatch) -> Iterator[TestClient]:
+    # Встроенный Qdrant держит эксклюзивный лок на каталоге: пока идёт индексация
+    # или eval, тесты на боевом индексе падали с «already accessed by another
+    # instance». Пустой временный индекс изолирует их от чужих процессов.
+    monkeypatch.setenv("QDRANT_PATH", str(tmp_path / "qdrant"))
+    monkeypatch.delenv("QDRANT_URL", raising=False)
+    get_settings.cache_clear()
+    yield TestClient(api_main.app)
+    get_settings.cache_clear()
 
 
 def test_index_page_renders(client):

@@ -1,0 +1,2447 @@
+{
+  "k": 10,
+  "rerank_threshold": 0.2,
+  "slices": {
+    "dense": {
+      "recall": 1.0,
+      "section_recall": 0.9230769230769231,
+      "section_at_1": 0.7692307692307693,
+      "mrr": 1.0
+    },
+    "rrf": {
+      "recall": 1.0,
+      "section_recall": 0.9230769230769231,
+      "section_at_1": 0.7692307692307693,
+      "mrr": 1.0
+    },
+    "rerank": {
+      "recall": 1.0,
+      "section_recall": 1.0,
+      "section_at_1": 0.8461538461538461,
+      "mrr": 0.9640000000000001
+    }
+  },
+  "refusal_rate": 0.7,
+  "answer_rate": 1.0,
+  "tuned_threshold": 0.02,
+  "tuned_on_test": {
+    "threshold": 0.02,
+    "answer_rate": 1.0,
+    "refusal_rate": 0.4,
+    "balanced": 0.7,
+    "in_corpus": 11,
+    "out_of_corpus": 5
+  },
+  "per_question": [
+    {
+      "id": "el-protection-classes",
+      "split": "test",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 12.2.007.0-75",
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.9965721231815616,
+      "top_found": "ГОСТ 12.2.007.0-75",
+      "scores": [
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.9966
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.9868
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.9045
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.6242
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.507
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.1988
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0235
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0129
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0129
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0124
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": 1,
+      "section_rank_rerank": 1
+    },
+    {
+      "id": "el-earth-resistance",
+      "split": "tune",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 12.2.007.0-75",
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.9950600743133843,
+      "top_found": "ГОСТ 12.2.007.0-75",
+      "scores": [
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.9951
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.7639
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.736
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.7142
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.55
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.1743
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0886
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0867
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0428
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0417
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": 2,
+      "section_rank_rerank": 1
+    },
+    {
+      "id": "el-bolt-diameter-by-current",
+      "split": "tune",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 12.2.007.0-75",
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.9800146238629538,
+      "top_found": "ГОСТ 12.2.007.0-75",
+      "scores": [
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.98
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.4958
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.3429
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.2792
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.2365
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.205
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.2014
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.1853
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.183
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.1767
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": 1,
+      "section_rank_rerank": 1
+    },
+    {
+      "id": "el-control-surface-temp",
+      "split": "test",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 12.2.007.0-75",
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.9115974536091517,
+      "top_found": "ГОСТ 12.2.007.0-75",
+      "scores": [
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.9116
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0209
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.007
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0069
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0056
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0053
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0043
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0035
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.002
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0019
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": 1,
+      "section_rank_rerank": 1
+    },
+    {
+      "id": "el-stop-button-color",
+      "split": "test",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 12.2.007.0-75",
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.9961900150931362,
+      "top_found": "ГОСТ 12.2.007.0-75",
+      "scores": [
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.9962
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.079
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0434
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0106
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0025
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0019
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0015
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0014
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0013
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0012
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": 1,
+      "section_rank_rerank": 1
+    },
+    {
+      "id": "el-conductor-colors",
+      "split": "tune",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 12.2.007.0-75",
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.991452089617229,
+      "top_found": "ГОСТ 12.2.007.0-75",
+      "scores": [
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.9915
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0818
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0478
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0442
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0191
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0186
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0127
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0048
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0042
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0041
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": 1,
+      "section_rank_rerank": 1
+    },
+    {
+      "id": "el-safe-voltage-note",
+      "split": "test",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 12.2.007.0-75",
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.9964921388976662,
+      "top_found": "ГОСТ 12.2.007.0-75",
+      "scores": [
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.9965
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.7804
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.1167
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.1136
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.108
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0791
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0732
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0517
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.05
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.04
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": 1,
+      "section_rank_rerank": 1
+    },
+    {
+      "id": "weld-edge-offset",
+      "split": "tune",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 5264-80",
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.9968535855162722,
+      "top_found": "ГОСТ 5264-80",
+      "scores": [
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.9969
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.7709
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.7026
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.6288
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.4853
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.4742
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.4728
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.4576
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.4394
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.3845
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": null,
+      "section_rank_rerank": null
+    },
+    {
+      "id": "weld-convexity",
+      "split": "test",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 5264-80",
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.9961759741317741,
+      "top_found": "ГОСТ 5264-80",
+      "scores": [
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.9962
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.9044
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.8736
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0335
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0274
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0244
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0242
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0229
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0221
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0216
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": null,
+      "section_rank_rerank": null
+    },
+    {
+      "id": "weld-min-leg",
+      "split": "test",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 5264-80",
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.9865521481300671,
+      "top_found": "ГОСТ 5264-80",
+      "scores": [
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.9866
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.9518
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.8722
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.1838
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.1668
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.1663
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.1316
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0989
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0803
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0801
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": null,
+      "section_rank_rerank": null
+    },
+    {
+      "id": "weld-thickness-difference",
+      "split": "tune",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 5264-80",
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.9895712542465794,
+      "top_found": "ГОСТ 5264-80",
+      "scores": [
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.9896
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0538
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0516
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0516
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0488
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0487
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0461
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0456
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0453
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0451
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": null,
+      "section_rank_rerank": null
+    },
+    {
+      "id": "weld-t1-designation",
+      "split": "test",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 5264-80",
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.8684484900953612,
+      "top_found": "ГОСТ 5264-80",
+      "scores": [
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.8684
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.6021
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.596
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.3869
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.2964
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.2753
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.2564
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.2538
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.2535
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.2447
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": null,
+      "section_rank_rerank": null
+    },
+    {
+      "id": "thread-runout-scope",
+      "split": "tune",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 10549-80",
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.9951524607326645,
+      "top_found": "ГОСТ 10549-80",
+      "scores": [
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.9952
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.992
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.9839
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.9828
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.9005
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.8865
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.8813
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.704
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.7029
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.6757
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": null,
+      "section_rank_rerank": null
+    },
+    {
+      "id": "thread-runout-m-outer",
+      "split": "test",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 10549-80",
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.7300071805789319,
+      "top_found": "ГОСТ 10549-80",
+      "scores": [
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.73
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.7221
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.7146
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.6225
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.5527
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.5343
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.4545
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.4487
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.359
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.3566
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": null,
+      "section_rank_rerank": null
+    },
+    {
+      "id": "thread-groove-symmetric",
+      "split": "tune",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 10549-80",
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.9478866521893984,
+      "top_found": "ГОСТ 10549-80",
+      "scores": [
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.9479
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.5822
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.3628
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.1236
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0348
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0322
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0315
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0297
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0275
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0258
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": null,
+      "section_rank_rerank": null
+    },
+    {
+      "id": "thread-trapezoid-multistart",
+      "split": "tune",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 10549-80",
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.9989405679333666,
+      "top_found": "ГОСТ 10549-80",
+      "scores": [
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.9989
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.657
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.3871
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.3729
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.265
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.2565
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.2483
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.1636
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.1452
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.1437
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": null,
+      "section_rank_rerank": null
+    },
+    {
+      "id": "metric-d2-formula",
+      "split": "tune",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 24705-2004",
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.9171014263035455,
+      "top_found": "ГОСТ 24705-2004",
+      "scores": [
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.9171
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.9049
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.6529
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.5545
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.5395
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.5348
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.4865
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.4172
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.3889
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.3797
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": 1,
+      "section_rank_rerank": 1
+    },
+    {
+      "id": "metric-m10-diameters",
+      "split": "tune",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 24705-2004",
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.23817496207985275,
+      "top_found": "ГОСТ 24705-2004",
+      "scores": [
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.2382
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.2364
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.2052
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.2012
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.1969
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.1642
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.1639
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.1626
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.1573
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.1521
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": 1,
+      "section_rank_rerank": 1
+    },
+    {
+      "id": "metric-d3-purpose",
+      "split": "test",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 24705-2004",
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.9027337300429845,
+      "top_found": "ГОСТ 24705-2004",
+      "scores": [
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.9027
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.8948
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.8946
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.8874
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.8853
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.8814
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.8788
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.8737
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.8674
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.8671
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": null,
+      "section_rank_rerank": 9
+    },
+    {
+      "id": "metric-scope",
+      "split": "test",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 24705-2004",
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.9977378787636845,
+      "top_found": "ГОСТ 24705-2004",
+      "scores": [
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.9977
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.8404
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.8395
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.7229
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.6001
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.5924
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.3251
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.3045
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.2946
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.2085
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": 7,
+      "section_rank_rerank": 4
+    },
+    {
+      "id": "disambig-groove-vs-diameter",
+      "split": "tune",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 10549-80",
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.6991108288681055,
+      "top_found": "ГОСТ 24705-2004",
+      "scores": [
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.6991
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.6929
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.6907
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.6777
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.6683
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.6395
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.5912
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.5667
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.562
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.556
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 10,
+      "section_rank_rrf": null,
+      "section_rank_rerank": null
+    },
+    {
+      "id": "disambig-inner-diameter",
+      "split": "tune",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 24705-2004",
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.4599545024893672,
+      "top_found": "ГОСТ 24705-2004",
+      "scores": [
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.46
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.404
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.3241
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.2449
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.1679
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.165
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.1586
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.1304
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.1281
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.1236
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": 1,
+      "section_rank_rerank": 1
+    },
+    {
+      "id": "named-24705-m12-pitch",
+      "split": "tune",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 24705-2004",
+      "named": [
+        "ГОСТ 24705"
+      ],
+      "named_missing_only": false,
+      "top_score": 0.8126414157843935,
+      "top_found": "ГОСТ 24705-2004",
+      "scores": [
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.8126
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.4583
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.4099
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.3651
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.3294
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.2648
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.2213
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.1864
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.1747
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.1681
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": null,
+      "section_rank_rerank": null
+    },
+    {
+      "id": "named-12-2-bolt-300a",
+      "split": "test",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 12.2.007.0-75",
+      "named": [
+        "ГОСТ 12.2.007.0-75"
+      ],
+      "named_missing_only": false,
+      "top_score": 0.9075274964079554,
+      "top_found": "ГОСТ 12.2.007.0-75",
+      "scores": [
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.9075
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.7836
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.6702
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.232
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.1744
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.1686
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.1107
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0774
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0587
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0363
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": 1,
+      "section_rank_rerank": 1
+    },
+    {
+      "id": "named-5264-min-leg",
+      "split": "tune",
+      "out_of_corpus": false,
+      "gold": "ГОСТ 5264-80",
+      "named": [
+        "ГОСТ 5264-80"
+      ],
+      "named_missing_only": false,
+      "top_score": 0.9945755680281663,
+      "top_found": "ГОСТ 5264-80",
+      "scores": [
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.9946
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.9624
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.8283
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.6707
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.6413
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.6288
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.604
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.6022
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.52
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.3963
+        }
+      ],
+      "rank_rrf": 1,
+      "rank_rerank": 1,
+      "section_rank_rrf": null,
+      "section_rank_rerank": null
+    },
+    {
+      "id": "oos-thread-tolerance-6g",
+      "split": "test",
+      "out_of_corpus": true,
+      "gold": null,
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.23753110996271098,
+      "top_found": "ГОСТ 10549-80",
+      "scores": [
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.2375
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.0538
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.05
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0436
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.0253
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0253
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0238
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0231
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0189
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0158
+        }
+      ]
+    },
+    {
+      "id": "oos-pipeline-welds",
+      "split": "tune",
+      "out_of_corpus": true,
+      "gold": null,
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.9166237891850794,
+      "top_found": "ГОСТ 5264-80",
+      "scores": [
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.9166
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.803
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.7034
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.6874
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.6535
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.626
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.5875
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.5656
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.5531
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.5486
+        }
+      ]
+    },
+    {
+      "id": "oos-vibration-limits",
+      "split": "test",
+      "out_of_corpus": true,
+      "gold": null,
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.7998645063041554,
+      "top_found": "ГОСТ 12.2.007.0-75",
+      "scores": [
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.7999
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.1104
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.004
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0023
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.002
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0017
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0017
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.0013
+        },
+        {
+          "designation": "ГОСТ 12.2.007.0-75",
+          "score": 0.0013
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0011
+        }
+      ]
+    },
+    {
+      "id": "oos-bend-radius",
+      "split": "test",
+      "out_of_corpus": true,
+      "gold": null,
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.04432539710803115,
+      "top_found": "ГОСТ 10549-80",
+      "scores": [
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0443
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0366
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0338
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.0275
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.0257
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.022
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0217
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0214
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0184
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.0184
+        }
+      ]
+    },
+    {
+      "id": "oos-roughness-marking",
+      "split": "tune",
+      "out_of_corpus": true,
+      "gold": null,
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.013766706553343286,
+      "top_found": "ГОСТ 5264-80",
+      "scores": [
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0138
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0125
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0091
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0067
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0059
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0049
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0043
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0035
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.003
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0029
+        }
+      ]
+    },
+    {
+      "id": "oos-unrelated-domain",
+      "split": "tune",
+      "out_of_corpus": true,
+      "gold": null,
+      "named": [],
+      "named_missing_only": false,
+      "top_score": 0.011663906033040237,
+      "top_found": "ГОСТ 24705-2004",
+      "scores": [
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.0117
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.0089
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.0079
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.0078
+        },
+        {
+          "designation": "ГОСТ 10549-80",
+          "score": 0.0073
+        },
+        {
+          "designation": "ГОСТ 5264-80",
+          "score": 0.0068
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.0061
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.006
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.0057
+        },
+        {
+          "designation": "ГОСТ 24705-2004",
+          "score": 0.0055
+        }
+      ]
+    },
+    {
+      "id": "oos-named-pipeline-welds",
+      "split": "test",
+      "out_of_corpus": true,
+      "gold": null,
+      "named": [
+        "ГОСТ 16037-80"
+      ],
+      "named_missing_only": true,
+      "top_score": null
+    },
+    {
+      "id": "oos-named-tolerances",
+      "split": "tune",
+      "out_of_corpus": true,
+      "gold": null,
+      "named": [
+        "ГОСТ 16093-2004"
+      ],
+      "named_missing_only": true,
+      "top_score": null
+    },
+    {
+      "id": "oos-named-old-edition",
+      "split": "tune",
+      "out_of_corpus": true,
+      "gold": null,
+      "named": [
+        "ГОСТ 5264-69"
+      ],
+      "named_missing_only": true,
+      "top_score": null
+    },
+    {
+      "id": "oos-named-earth-sign",
+      "split": "test",
+      "out_of_corpus": true,
+      "gold": null,
+      "named": [
+        "ГОСТ 21130-75"
+      ],
+      "named_missing_only": true,
+      "top_score": null
+    }
+  ],
+  "generation": {
+    "modes": {
+      "rag": {
+        "answer_rate": 0.92,
+        "accuracy": 0.8695652173913043,
+        "graded": 23,
+        "ungrounded_rate": 0.04,
+        "refusal_rate": 1.0
+      },
+      "full_context": {
+        "answer_rate": 1.0,
+        "accuracy": 0.9565217391304348,
+        "graded": 23,
+        "ungrounded_rate": 0.12,
+        "refusal_rate": 1.0
+      }
+    },
+    "answers": [
+      {
+        "id": "el-protection-classes",
+        "rag": {
+          "answer": "Установлены пять классов защиты по способу защиты человека от поражения электрическим током: **0; 01; I; II; III** [S1]. Стандарт ГОСТ 12.2.007-75 — действующий, ограничение срока действия снято [S4].\n\n**Определения классов [S1]:**\n\n| Класс | Характеристика изделий |\n|---|---|\n| 0 | имеющие по крайней мере рабочую изоляцию и не имеющие элементов для заземления, если эти изделия не отнесены к классу II или III [S1] |\n| 01 | имеющие по крайней мере рабочую изоляцию, элемент для заземления и провод без заземляющей жилы для присоединения к источнику питания [S1] |\n| I | имеющие по крайней мере рабочую изоляцию и элемент для заземления; если изделие класса I имеет провод для присоединения к источнику питания, этот провод должен иметь заземляющую жилу и вилку с заземляющим контактом [S1] |\n| II | имеющие двойную или усиленную изоляцию и не имеющие элементов для заземления [S1] |\n| III | предназначенные для работы при безопасном сверхнизком напряжении, не имеющие ни внешних, ни внутренних электрических цепей, работающих при другом напряжении [S1] |\n\nДополнительно для класса III: изделия, получающие питание от внешнего источника, могут быть отнесены к классу III только в том случае, если они присоединены непосредственно к источнику питания, преобразующему более высокое напряжение в безопасное сверхнизкое напряжение, что осуществляется посредством разделительного трансформатора или преобразователя с отдельными обмотками; при этом входная и выходная обмотки не должны быть электрически связаны и между ними должна быть двойная или усиленная изоляция [S1].\n\n**Значение «безопасного сверхнизкого напряжения»** приводится в примечании: номинальное напряжение, которое не превышает 42 В между отдельными проводниками или между проводником и землей, при этом без нагрузки напряжение не превышает 50 В; при наличии особо неблагоприятных условий (теснота, неудобное положение работающего, соприкосновение с большими металлическими хорошо заземленными поверхностями — работа в котлах, колодцах, на понтонах) для питания ручных светильников должно применяться напряжение не выше 12 В [S2].\n\n**Оговорки:**\n- Перечень классов и их определения приведены только во фрагменте [S1]; во фрагменте [S2] присутствует лишь заголовок раздела 2 без самого перечня — противоречий между фрагментами нет, но данные не дублируются.\n- Раздел 2 приведён как «Измененная редакция, Изм. № 4» [S1].\n- Фрагменты помечены как распознанные OCR с возможными ошибками; в исходном тексте перечень набран с искажениями («пять классов зашиты: 0. 01; I; II; III», «поражения электрическим ГОКОМ») [S1][S2] — при практическом применении сверяйтесь с официальным изданием.\n- Стандарт не распространяется на электротехнические изделия: выполненные в виде комплексов; входящие в состав электрооборудования морских и речных судов; электровозы и входящее в их состав электрооборудование; бытовые электроприборы; машины напольного безрельсового электрифицированного транспорта (МНБЭТ) [S4].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": false
+        },
+        "full_context": {
+          "answer": "ГОСТ 12.2.007.0-75 устанавливает пять классов защиты: 0, 01, I, II, III [S20].\n\nРаспределение изделий по классам [S20]:\n- **класс 0** — изделия, имеющие по крайней мере рабочую изоляцию и не имеющие элементов для заземления, если эти изделия не отнесены к классу II или III [S20];\n- **класс 01** — изделия, имеющие по крайней мере рабочую изоляцию, элемент для заземления и провод без заземляющей жилы для присоединения к источнику питания [S20];\n- **класс I** — изделия, имеющие по крайней мере рабочую изоляцию и элемент для заземления; если изделие класса I имеет провод для присоединения к источнику питания, этот провод должен иметь заземляющую жилу и вилку с заземляющим контактом [S20];\n- **класс II** — изделия, имеющие двойную или усиленную изоляцию и не имеющие элементов для заземления [S20];\n- **класс III** — изделия, предназначенные для работы при безопасном сверхнизком напряжении, не имеющие ни внешних, ни внутренних электрических цепей, работающих при другом напряжении [S20].\n\nДополнительно по классу III: изделия, получающие питание от внешнего источника, могут быть отнесены к классу III только в том случае, если они присоединены непосредственно к источнику питания, преобразующему более высокое напряжение в безопасное сверхнизкое напряжение, что осуществляется посредством разделительного трансформатора или преобразователя с отдельными обмотками; при использовании разделительного трансформатора или преобразователя его входная и выходная обмотки не должны быть электрически связаны и между ними должна быть двойная или усиленная изоляция [S20].\n\nОговорка: фрагменты имеют статус «действующий», но помечены как распознанные OCR с возможными ошибками [S20]. Определение безопасного сверхнизкого напряжения приведено в примечании к п. 1.2 того же стандарта: номинальное напряжение, которое не превышает 42 В между отдельными проводниками или между проводником и землей, при этом без нагрузки напряжение не превышает 50 В [S19].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": false
+        }
+      },
+      {
+        "id": "el-earth-resistance",
+        "rag": {
+          "answer": "Максимальное сопротивление между заземляющим болтом (винтом, шпилькой) и каждой доступной прикосновению металлической нетоковедущей частью изделия, которая может оказаться под напряжением, не должно превышать **0,1 Ом** [S1, п. 3.3.7].\n\nУточнения и условия:\n\n- В изделии должно быть обеспечено электрическое соединение всех доступных прикосновению металлических нетоковедущих частей изделия, которые могут оказаться под напряжением, с элементами для заземления [S1, п. 3.3.7].\n- Сопротивление нормируется относительно *каждой* такой части, а не только относительно какой-либо одной [S1, п. 3.3.7].\n- Требование п. 3.3.7 упоминается также как условие, при котором допускается не выполнять элементы для заземления у нетоковедущих металлических частей изделия, имеющих электрический контакт с заземлёнными частями [S4, п. 3.3.8], и у изделий, предназначенных для установки только на заземлённых металлических конструкциях [S2, п. 3.3.1].\n\nОговорка: фрагмент [S1] помечен как распознанный OCR (возможны ошибки); значение «0,1 Ом» приведено дословно, без пересчёта. Сведений о других значениях сопротивления во фрагментах нет. Стандарт ГОСТ 12.2.007.0-75 указан как действующий [S1][S2][S3][S4].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        },
+        "full_context": {
+          "answer": "Максимальное значение сопротивления между заземляющим болтом (винтом, шпилькой) и каждой доступной прикосновению металлической нетоковедущей частью изделия, которая может оказаться под напряжением, — **0,1 Ом** [S24].\n\nУточнения:\n\n- Требование относится к изделиям, в которых должно быть обеспечено электрическое соединение всех доступных прикосновению металлических нетоковедущих частей, могущих оказаться под напряжением, с элементами для заземления [S24] (п. 3.3.7 ГОСТ 12.2.007.0-75).\n- Стандарт ГОСТ 12.2.007.0-75 указан как действующий [S18]; ограничение срока действия снято по протоколу № 3—93 Межгосударственного совета по стандартизации, метрологии и сертификации (ИУС 5-6—93) [S18].\n- Требования п. 3.3 не относятся к изделиям, предназначенным для эксплуатации только в районах с тропическим климатом и выполненным по ГОСТ 15151—69, ГОСТ 9.048—89 [S26].\n- Числовое значение приведено дословно по фрагменту; иных значений сопротивления в приведённых фрагментах не содержится.",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        }
+      },
+      {
+        "id": "el-bolt-diameter-by-current",
+        "rag": {
+          "answer": "**Для изделия с номинальным током 100 А по таблице 1 ГОСТ 12.2.007.0-75 требуется резьба М6, диаметр контактной площадки 16 мм на плоскости поверхности и 12 мм на выступающей относительно поверхности [S1].**\n\nУточнения и оговорки:\n\n1. **Пограничное значение.** Ток 100 А попадает точно на границу строк таблицы. Строка «Св. 63 » 100» даёт М 6 [S1]; следующая строка «» 100 . 250» даёт М 8 [S1]. Поскольку формулировка «Св. 63 до 100» включает 100, для 100 А принимается М6; строка «св. 100» начинается со значений свыше 100 А. Если в вашем конкретном случае ток может превышать 100 А, применяется М8.\n\n2. **Какой ток подставлять.** По примечаниям к таблице: «В качестве тока при выборе наименьшего диаметра болта для потребителей и преобразователей электромагнитной энергии следует принимать значение тока, потребляемого изделием от источника (сети), для источников электромагнитной энергии — значение номинального тока нагрузки» [S1]. Для источников с несколькими номинальными токами диаметр болта выбирается по наибольшему из этих токов [S1].\n\n3. **Предупреждение о качестве текста.** Таблица 1 в [S1] приведена в распознанном виде (OCR) с искажениями: заголовки граф и часть значений строк искажены («Св. 4 ДО 6», «м 3» вместо «М 3», «41) * 63» и т. п.). Конкретно строка для 100 А читается как «» 63 . 100 | М 6 | 16 | 12», но перед использованием в документации таблицу следует сверить с оригиналом ГОСТ 12.2.007.0-75.\n\n4. **Ограничение ответа.** Сведений о размерах резьбы М6 (средний, внутренний диаметры) в приведённых фрагментах нет: ГОСТ 24705-2004 представлен таблицами с номинальными диаметрами от 0,25 мм [S4] до 600 мм [S5], но строки для диаметра 6 в имеющихся фрагментах (стр. 6, 12, 14, 18–19) отсутствуют. Подтвердить числовые размеры М6 по этим фрагментам нельзя.\n\n5. Сопутствующие требования, которые могут быть вам нужны при оформлении заземляющего болта: заземляющие зажимы должны соответствовать ГОСТ 21130—75, использование для заземления болтов, винтов, шпилек, выполняющих роль крепёжных деталей, не допускается [S3]; сопротивление между заземляющим болтом и каждой доступной прикосновению металлической нетоковедущей частью — не более 0,1 Ом [S1]. Статус ГОСТ 12.2.007.0-75 и ГОСТ 24705-2004 во фрагментах указан как «действующий» [S1][S2][S3][S4][S5][S6].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        },
+        "full_context": {
+          "answer": "**Кратко:** для номинального тока 100 А требуется заземляющий болт (винт, шпилька) с номинальным диаметром резьбы **М6**, контактная площадка — диаметром **16 мм** на плоскости поверхности или **12 мм** по выступлению относительно поверхности [S24].\n\n**Уточнения:**\n\n- Значение выбрано по табл. 1 ГОСТ 12.2.007.0-75 «Номинальный ток электротехнического изделия, А» → строка «Св. 63 до 100»: номинальный диаметр резьбы для места присоединения **не менее М 6**, диаметр контактной площадки 16 мм (на плоскости поверхности) и 12 мм (по выступлению относительно поверхности) [S24].\n- Ток 100 А лежит на границе строк. Следующая строка «Св. 100 до 250» даёт **М 8** при диаметре площадки 20 мм и 17 мм [S24]. То есть при токе строго более 100 А следует принимать М8; при токе, равном 100 А, применима строка «Св. 63 до 100» — М6 [S24].\n- Если ток изделия находится в диапазоне свыше 250 А, предусмотрена возможность вместо одного болта ставить два, но с суммарным поперечным сечением не менее требуемого [S24].\n- При выборе наименьшего диаметра болта: для потребителей и преобразователей электромагнитной энергии принимается значение тока, потребляемого изделием от источника (сети); для источников электромагнитной энергии — значение номинального тока нагрузки; для источников с несколькими номинальными токами — по наибольшему из этих токов [S24].\n- Сам заземляющий зажим должен соответствовать требованиям ГОСТ 21130—75; использование для заземления болтов, винтов, шпилек, выполняющих роль крепёжных деталей, не допускается [S23].\n\n**Оговорки:**\n\n- Приведённые данные относятся к ГОСТ 12.2.007.0-75; во фрагменте он указан как действующий, издание с Изменениями № 1, 2, 3, 4 [S18][S24]. Отдельно в примечании ФГУП «СТАНДАРТИНФОРМ» указано, что ГОСТ 12.1.012—90 заменён на ГОСТ 12.1.012-2004 (на выбор диаметра болта не влияет) [S30].\n- Таблица приведена по OCR-распознаванию, возможны искажения; формулировки граф («на плоскости поверхности», «по выступлению относительно поверхности») и числа перенесены дословно, но при выпуске документации сверьте с официальным текстом стандарта.",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        }
+      },
+      {
+        "id": "el-control-surface-temp",
+        "rag": {
+          "answer": "Предельная температура поверхности органов управления, выполненных из металла, — не более 40 °C [S1].\n\nУточнения и оговорки:\n- Для органов управления, выполненных из материалов с низкой теплопроводностью, установлен предел 45 °C [S1].\n- Отдельное условие: для оборудования, внутри которого температура равна или ниже 100 °C, температура на поверхности не должна превышать 35 °C [S1]. То есть применительно к такому оборудованию действует более жёсткое ограничение — 35 °C.\n- Указанные значения приведены для органов управления, предназначенных для выполнения операций без применения средств индивидуальной защиты рук, а также для выполнения операций в аварийных ситуациях [S1].\n- При невозможности по техническим причинам достигнуть указанных температур должны быть предусмотрены мероприятия по защите работающих от возможного перегревания [S1].\n- Источник [S1] — ГОСТ 12.2.007.0-75, статус: действующий, п. 3.4.7. Фрагмент распознан OCR, возможны ошибки в символах (в тексте градусы отображаются как «'С» и «*С»); единицы измерения — градусы Цельсия.",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        },
+        "full_context": {
+          "answer": "40 °С — для органов управления, выполненных из металла [S26].\n\nУсловия применения (ГОСТ 12.2.007.0-75, п. 3.4.7, действующий):\n- Температура на поверхности органов управления, предназначенных для выполнения операций без применения средств индивидуальной защиты рук, а также для выполнения операций в аварийных ситуациях, во всех случаях не должна превышать 40 °С для органов управления из металла и 45 °С — для выполненных из материалов с низкой теплопроводностью [S26].\n- Отдельно: для оборудования, внутри которого температура равна или ниже 100 °С, температура на поверхности не должна превышать 35 °С; при невозможности по техническим причинам достигнуть указанных температур должны быть предусмотрены мероприятия по защите работающих от возможного перегревания [S26].\n\nОговорка: фрагменты приведены в распознанном виде (OCR), возможны ошибки в цифрах; значения перенесены дословно [S26].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        }
+      },
+      {
+        "id": "el-stop-button-color",
+        "rag": {
+          "answer": "Орган управления, которым осуществляется останов (отключение), должен быть выполнен из материала красного цвета [S1, п. 3.4.8].\n\nОговорки:\n- Фрагмент [S1] помечен как распознанный OCR, возможны ошибки (в тексте п. 3.4.8 встречаются искажения, например «орган упраатения»).\n- Статус стандарта во фрагменте указан как «действующий» [S1].\n- Иных указаний о цвете органа останова в приведённых фрагментах нет; пункты 3.4.9–3.4.15 регулируют размеры кнопок, зоны расположения, высоты установки приборов и усилия нажатия, но не цвет [S1].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        },
+        "full_context": {
+          "answer": "**Красного цвета.** Орган управления, которым осуществляется останов (отключение), должен быть выполнен из материала красного цвета [S27].\n\nДополнительно из того же пункта [S27]:\n- орган управления, которым осуществляется пуск (включение), должен иметь ахроматическую расцветку (чёрную, серую или белую); допускается выполнять этот орган зелёного цвета;\n- орган управления, которым может быть попеременно вызван останов или пуск изделия, должен быть выполнен только ахроматического цвета (рукоятки автоматических выключателей допускается выполнять жёлто-коричневого цвета);\n- орган управления, которым осуществляется воздействие, предотвращающее аварию изделия, — жёлтого цвета;\n- орган управления, которым осуществляются операции, отличные от перечисленных выше, — ахроматического или синего цвета.\n\nОговорка: фрагмент [S27] помечен как распознанный OCR («возможны ошибки»); ссылка на пункт приведена так, как он обозначен во фрагменте — п. 3.4.8 ГОСТ 12.2.007.0-75. Статус стандарта во фрагменте указан как «действующий» [S18].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        }
+      },
+      {
+        "id": "el-conductor-colors",
+        "rag": {
+          "answer": "Проводники в цепях заземления обозначают зелено-жёлтой (двухцветной) расцветкой изоляции [S1].\n\nОснование — п. 3.9.5 ГОСТ 12.2.007.0-75 (действующий) [S1]: «зелено-желтую (двухцветную) — для проводников в цепях заземления». Там же для остальных цепей установлены: чёрная — силовые цепи; красная — цепи управления, измерения и сигнализации переменного тока; синяя — цепи управления, измерения и сигнализации постоянного тока; голубая — проводники, соединённые с нулевым проводом и не предназначенные для заземления [S1].\n\nОговорки: фрагмент помечен как распознанный OCR, возможны ошибки; расцветки применяются «при необходимости различать проводники по функциональному назначению цепей» [S1]. Маркировка при этом наносится на обоих концах каждого проводника и должна сохраняться при отсоединении от зажима (пп. 3.9.3–3.9.4) [S1].\n\nПримечание, не относящееся к вопросу: в примечании к разделу 3 указано, что ГОСТ 12.1.012—90 заменён на ГОСТ 12.1.012-2004 [S1].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        },
+        "full_context": {
+          "answer": "Проводники в цепях заземления обозначают **зелено-жёлтой (двухцветной)** расцветкой изоляции [S30].\n\nУточнения (п. 3.9.5 ГОСТ 12.2.007.0-75, ГОСТ действующий) [S30]:\n\n- чёрная — для проводников в силовых цепях;\n- красная — для проводников в цепях управления, измерения и сигнализации переменного тока;\n- синяя — для проводников в цепях управления, измерения и сигнализации постоянного тока;\n- зелено-жёлтая (двухцветная) — для проводников в цепях заземления;\n- голубая — для проводников, соединённых с нулевым проводом и не предназначенных для заземления.\n\nПриведённый перечень расцветок применяется «при необходимости различать проводники по функциональному назначению цепей, в которых они использованы» [S30]. Отдельно оговорено, что маркировка проводника должна сохраняться на замаркированном проводнике при отсоединении его от зажима [S30].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        }
+      },
+      {
+        "id": "el-safe-voltage-note",
+        "rag": {
+          "answer": "Безопасным сверхнизким считается номинальное напряжение, не превышающее 42 В между отдельными проводниками или между проводником и землёй; при этом без нагрузки напряжение не должно превышать 50 В [S1]. В особо неблагоприятных условиях (теснота, неудобное положение работающего, соприкосновение с большими металлическими хорошо заземлёнными поверхностями — например, работа в котлах, колодцах, на понтонах) для питания ручных светильников должно применяться напряжение не выше 12 В [S1].\n\nУточнения и оговорки:\n\n- Определение приведено в примечании к п. 1.2 ГОСТ 12.2.007.0-75; пункт входит в перечень средств обеспечения безопасности электротехнических изделий, куда отнесено «безопасное сверхнизкое напряжение в электрических цепях» [S1].\n- Класс III — изделия, предназначенные для работы при безопасном сверхнизком напряжении, не имеющие ни внешних, ни внутренних электрических цепей, работающих при другом напряжении [S2]. Изделия, получающие питание от внешнего источника, могут быть отнесены к классу III только при присоединении непосредственно к источнику питания, преобразующему более высокое напряжение в безопасное сверхнизкое посредством разделительного трансформатора или преобразователя с отдельными обмотками; входная и выходная обмотки не должны быть электрически связаны, между ними должна быть двойная или усиленная изоляция [S2].\n- Статус документа во фрагментах указан как «действующий» [S1][S2]; сведений об отмене или замене нет.\n- Оговорка о качестве источника: фрагменты распознаны OCR, возможны ошибки (в тексте встречаются искажения, например «нетоковедущнх», «ГОКОМ»); числовые значения напряжений приведены дословно, как во фрагменте.",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        },
+        "full_context": {
+          "answer": "Безопасным сверхнизким считается номинальное напряжение, не превышающее 42 В между отдельными проводниками или между проводником и землёй, при этом без нагрузки напряжение не превышает 50 В [S19]. Для питания ручных светильников в особо неблагоприятных условиях (теснота, неудобное положение работающего, соприкосновение с большими металлическими хорошо заземлёнными поверхностями — работа в котлах, колодцах, на понтонах) должно применяться напряжение не выше 12 В [S19].\n\nУточнения и связанные положения:\n\n- Класс III — изделия, предназначенные для работы при безопасном сверхнизком напряжении, не имеющие ни внешних, ни внутренних электрических цепей, работающих при другом напряжении [S20].\n- Изделия, получающие питание от внешнего источника, могут быть отнесены к классу III только при присоединении непосредственно к источнику питания, преобразующему более высокое напряжение в безопасное сверхнизкое посредством разделительного трансформатора или преобразователя с отдельными обмотками; входная и выходная обмотки не должны быть электрически связаны, между ними должна быть двойная или усиленная изоляция [S20].\n- Порог 42 В используется также в других требованиях: конструкция штепсельных розеток и вилок для напряжений выше 42 В должна отличаться от конструкции розеток и вилок для напряжений 42 В и менее [S21]; допускается не заземлять изделия, части которых не могут находиться под переменным напряжением выше 42 В и под постоянным напряжением выше ПО В [S23].\n- Отдельно нормируется изоляция: допускается для изделий, работающих при напряжении не выше 12 В переменного тока и 36 В постоянного тока, не приводить в стандартах и ТУ значения электрической прочности изоляции и её сопротивления [S22].\n\nОговорка: фрагменты распознаны OCR, в них возможны ошибки; значения 42 В, 50 В, 12 В, 36 В и 110 В приведены дословно по тексту фрагментов. Статус ГОСТ 12.2.007-75 во фрагментах указан как действующий, предупреждение об отмене/замене не требуется.",
+          "insufficient": false,
+          "warnings": [
+            "Этих чисел нет в процитированных фрагментах: 110. Сверьте их с документом."
+          ],
+          "ungrounded_numbers": [
+            "110"
+          ],
+          "correct": true
+        }
+      },
+      {
+        "id": "weld-edge-offset",
+        "rag": {
+          "answer": "Для деталей толщиной до 4 мм допускается смещение свариваемых кромок перед сваркой относительно друг друга **не более 0,5 мм** [S1] (п. 5 ГОСТ 5264-80).\n\nДля сопоставления, по тому же пункту [S1]:\n- 1,0 мм — для деталей толщиной 4—10 мм;\n- 0,1 s, но не более 3 мм — для деталей толщиной 10—100 мм;\n- 0,01 s + 2 мм, но не более 4 мм — для деталей толщиной более 100 мм.\n\nОговорки:\n- Фрагмент [S1] помечен как распознанный OCR, возможны ошибки; в нём приведены пункты 3–12 (стр. 28–30) и указано, что п. 6 приведён в редакции Изм. № 1. Пункт 5 в приведённом тексте такой пометки не имеет.\n- Другие фрагменты ([S2]–[S6]) содержат табличные данные о конструктивных элементах и размерах швов; сведений о допускаемом смещении кромок в них нет, поэтому подтвердить или уточнить значение 0,5 мм по ним невозможно.",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        },
+        "full_context": {
+          "answer": "Для деталей толщиной до 4 мм допускается смещение свариваемых кромок перед сваркой не более **0,5 мм** [S89] (ГОСТ 5264-80, п. 5).\n\nУточнения по тому же пункту — допуски для остальных толщин [S89]:\n- 1,0 мм — для деталей толщиной 4—10 мм;\n- 0,1 s, но не более 3 мм — для деталей толщиной 10—100 мм;\n- 0,01 s + 2 мм, но не более 4 мм — для деталей толщиной более 100 мм.\n\nОговорка: фрагмент помечен как распознанный OCR, возможны ошибки в символах. ГОСТ 5264-80 приведён как действующий, ограничение срока действия снято [S59].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        }
+      },
+      {
+        "id": "weld-convexity",
+        "rag": {
+          "answer": "Допускается выпуклость углового шва до 30 % его катета [S1, п. 13]. В том же пункте нормируется и вогнутость — также до 30 % катета [S1, п. 13].\n\nУточнения:\n\n- Вогнутость при этом не должна приводить к уменьшению значения катета Кп, установленного при проектировании [S1, п. 13].\n- Катетом Кп является катет наибольшего прямоугольного треугольника, вписанного во внешнюю часть углового шва; при симметричном шве за катет Кп принимается любой из равных катетов, при несимметричном — меньший [S1, п. 13].\n- Пункт 13 приведён в редакции Изм. № 1 [S1, п. 13].\n\nОговорки:\n\n- ГОСТ 5264-80 — действующий [S1], [S2], [S3].\n- Фрагмент помечен как распознанный OCR с возможными ошибками, поэтому формулировку п. 13 стоит сверить с бумажным/официальным текстом стандарта.\n- Отдельно от выпуклости/вогнутости стандарт нормирует увеличение размеров шва до 30 % номинального значения — в местах перекрытия сварных швов и в местах исправления дефектов [S1, п. 15]; это иное требование, не о выпуклости.\n- Предельные отклонения размера катета от номинального значения приведены в приложении 3 [S2, п. 9]; во фрагменте [S3] таблица приложения 3 читается частично (часть значений OCR не распознана), поэтому подтвердить их дословно по приведённым фрагментам нельзя.",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        },
+        "full_context": {
+          "answer": "**Допускается выпуклость и вогнутость углового шва до 30 % его катета** [S90].\n\nУточнения и оговорки:\n- Вогнутость при этом не должна приводить к уменьшению значения катета Кп (черт. 5), установленного при проектировании [S90].\n- Пояснение к термину: катетом Кп является катет наибольшего прямоугольного треугольника, вписанного во внешнюю часть углового шва; при симметричном шве за катет Кп принимается любой из равных катетов, при несимметричном шве — меньший [S90].\n- Пункт дан в редакции Изм. № 1 [S90].\n\nСтандарт — ГОСТ 5264-80, статус в приведённых фрагментах указан как действующий (ограничение срока действия снято по протоколу № 5—94) [S59]. Фрагменты помечены как распознанные OCR, возможны ошибки.",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        }
+      },
+      {
+        "id": "weld-min-leg",
+        "rag": {
+          "answer": "Минимальный катет углового шва — **7 мм** [S1].\n\nУсловия и оговорки:\n- Значение относится к стали с пределом текучести **до 400 МПа** и толщине **более толстого** из свариваемых элементов **св. 16 до 22 мм** [S1].\n- Минимальные значения катетов угловых швов приведены в приложении 1 [S1][S3].\n- Примечание: минимальное значение катета не должно превышать **1,2 толщины более тонкого элемента** [S1][S2].\n- Стандарт указан как действующий [S1][S2][S3]; фрагменты помечены как распознанные OCR, возможны ошибки.",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        },
+        "full_context": {
+          "answer": "**Минимальный катет углового шва — 7 мм.**\n\nЭто значение для предела текучести свариваемой стали «До 400» МПа и толщины более толстого из свариваемых элементов «Св. 16 до 22» мм [S90].\n\nУточнения и оговорки:\n\n- Значения приведены в приложении 1 к ГОСТ 5264-80; сам стандарт указывает: «Минимальные значения катетов угловых швов приведены в приложении 1» [S89][S90].\n- Оговорка к таблице: «Минимальное значение катета не должно превышать 1,2 толщины более тонкого элемента» [S90]. То есть при малой толщине более тонкого элемента табличное значение 7 мм может оказаться неприменимым.\n- Для сравнения, при том же пределе текучести «До 400» МПа и толщине «Св. 10 до 16» мм минимальный катет равен 6, а при «Св. 22 до 32» мм — 8 [S90].\n- Размер катета устанавливается при проектировании (п. 9); предельные отклонения размера катета от номинального значения — по приложению 3 [S89][S91].\n\nФрагменты не содержат данных о минимальном катете для сталей с пределом текучести свыше 450 МПа — в таблице приведена только строка «Св. 400 до 450» [S90], поэтому для более высоких значений ответить по приведённым фрагментам нельзя.\n\nСтандарт обозначен как действующий [S59]; ограничение срока действия снято по протоколу № 5—94 [S59].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        }
+      },
+      {
+        "id": "weld-thickness-difference",
+        "rag": {
+          "answer": "Сварку стыковых соединений деталей неодинаковой толщины выполняют так же, как деталей одинаковой толщины, если разность толщин не превышает значений, указанных в табл. 55 [S1]:\n\n| Толщина тонкой детали | Разность толщин деталей |\n| --- | --- |\n| От 1 до 4 | 1 |\n| Св. 4 до 20 | 2 |\n| Св. 20 до 30 | 3 |\n| Св. 30 | 4 |\n\nУсловия применения:\n- Конструктивные элементы подготовленных кромок и размеры сварного шва в этом случае следует выбирать по большей толщине [S1].\n- При разности в толщине свариваемых деталей свыше значений, указанных в табл. 55, на детали, имеющей большую толщину, должен быть сделан скос с одной или двух сторон до толщины тонкой детали s, как указано на черт. 2, 3 и 4; при этом конструктивные элементы подготовленных кромок и размеры сварного шва следует выбирать по меньшей толщине [S1].\n\nОговорки:\n- Фрагмент [S1] помечен как «распознано OCR, возможны ошибки»; значения таблицы приведены дословно, единица измерения в шапке таблицы — «мм» [S1].\n- Ссылки на черт. 2, 3, 4 приведены по тексту фрагмента, сами чертежи во фрагменте не воспроизведены [S1].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": null
+        },
+        "full_context": {
+          "answer": "Сварку стыковых соединений деталей неодинаковой толщины выполняют как для деталей одинаковой толщины, если разность толщин не превышает значений, указанных в табл. 55 [S89]. Конструктивные элементы подготовленных кромок и размеры сварного шва в этом случае следует выбирать по большей толщине [S89].\n\nТаблица 55, мм [S89]:\n\n| Толщина тонкой детали | Разность толщин деталей |\n| --- | --- |\n| От 1 до 4 | 1 |\n| Св. 4 до 20 | 2 |\n| Св. 20 до 30 | 3 |\n| Св. 30 | 4 |\n\nОговорка: при разности в толщине свариваемых деталей свыше значений, указанных в табл. 55, на детали, имеющей большую толщину, должен быть сделан скос с одной или двух сторон до толщины тонкой детали s, как указано на черт. 2, 3 и 4; при этом конструктивные элементы подготовленных кромок и размеры сварного шва следует выбирать по меньшей толщине [S89].\n\nИсточник — ГОСТ 5264-80 (действующий), п. 4 [S89]. Фрагмент распознан OCR, возможны ошибки.",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": null
+        }
+      },
+      {
+        "id": "weld-t1-designation",
+        "rag": {
+          "answer": "**Кратко:** Т1 — условное обозначение **таврового** сварного соединения с **односторонним** швом **без скоса кромок**, для толщин свариваемых деталей **2—40 мм** [S3].\n\n**Уточнения:**\n\n- В таблице 1 (продолжение, стр. 6–7) в графе «Характер сварного шва» для типа Т1 указано «Односторонний», в графе формы подготовки кромок — «Без скоса кромок», толщина свариваемых деталей — «2—40» [S3].\n- Размеры соединения Т1 приведены в таблице 45 (стр. 25) [S1]:\n\n| S (диапазон толщин) | Номин. | Пред. откл. |\n| --- | --- | --- |\n| От 2 до 3 | 0 | +1 |\n| Св. 3 до 15 | 0 | +2 |\n| Св. 15 до 40 | 0 | +3 |\n\n**Оговорки:**\n\n1. Оба фрагмента — результат OCR, возможны ошибки распознавания. В [S1] таблица 45 приведена с сильно искажённой шапкой: подписи столбцов читаются как «Ъ / Номин.» и «Ъ / Пред. откл.», при этом буквенное обозначение размера (b или иное) однозначно установить по фрагменту нельзя. Поэтому приведённые значения 0; +1 / +2 / +3 следует сверять с бумажным оригиналом.\n2. В [S1] в таблице 46 встречается обозначение «ТЗ», которое, вероятно, является OCR-искажением обозначения «Т3»; отождествлять его с Т1 нельзя.\n3. В [S3] графы таблицы 1 при распознавании смещены, поэтому привязка «Т1 — односторонний — без скоса кромок — 2—40 мм» установлена по взаимному расположению строк и столбцов и также требует сверки с оригиналом.\n4. Статус ГОСТ 5264-80 во всех фрагментах указан как «действующий», предупреждение о замене не требуется [S1]–[S6].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        },
+        "full_context": {
+          "answer": "**Кратко.** Т1 — условное обозначение **таврового** сварного соединения с **односторонним** швом **без скоса кромок**, выполняемого ручной дуговой сваркой; в табл. 1 для него указана толщина свариваемых деталей **2—40 мм** [S61][S59].\n\n**Уточнения и размеры.**\n- Тип соединения — тавровое, шов односторонний, кромки без скоса [S61]. Рядом в той же таблице стоит Т3 — тавровое двустороннее без скоса кромок [S61].\n- Конструктивные элементы и размеры Т1 — по табл. 45 (размеры, мм) [S87]:\n  - S **от 2 до 3** — b номин. **0**, пред. откл. **+1**;\n  - S **св. 3 до 15** — b номин. **0**, пред. откл. **+2**;\n  - S **св. 15 до 40** — b номин. **0**, пред. откл. **+3**.\n- Для катета углового шва (Т1 — соединение с угловым швом): размер катета должен быть **не более 3 мм** для деталей толщиной **до 3 мм включительно** и **1,2 толщины более тонкой детали** при сварке деталей толщиной **свыше 3 мм**; предельные отклонения катета от номинала — по приложению 3 [S89]. Минимальные значения катетов — по приложению 1, для электродов с более высоким временным сопротивлением разрыву — по приложению 2 [S89][S90].\n- Область действия: стандарт устанавливает основные типы, конструктивные элементы и размеры сварных соединений из сталей, а также сплавов на железоникелевой и никелевой основах, выполняемых ручной дуговой сваркой; на сварные соединения стальных трубопроводов по ГОСТ 16037-80 не распространяется [S59].\n\n**Оговорки.**\n- ГОСТ 5264-80 — статус «действующий»; ограничение срока действия снято по протоколу № 5—94 МГС (ИУС 11-12—94) [S59].\n- Фрагменты распознаны OCR с искажениями: таблица 1 (графы «Тип соединения», «Характер сварного шва», «Форма подготовленных кромок») в приведённом виде читается фрагментарно, графические изображения швов отсутствуют. Привязку значения «2—40 мм» именно к строке Т1 следует проверить по бумажному/официальному изданию: в OCR-тексте толщины и характер шва расположены вразрыв строк [S60][S61].\n- В приведённых фрагментах отсутствует текст п. 1 применительно к обозначениям типов соединений (расшифровка буквенно-цифровых обозначений вида «Т1» самим стандартом в явном виде не дана) — восстановлено только по табл. 1 и табл. 45.",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        }
+      },
+      {
+        "id": "thread-runout-scope",
+        "rag": {
+          "answer": "Краткий ответ: по ГОСТ 10549-80 стандарт устанавливает размеры сбегов, недорезов, проточек и фасок для пяти видов резьбы — метрической, трубной цилиндрической, трубной конической, конической дюймовой с углом профиля 60' и трапецеидальной [S1].\n\nУточнения:\n\n- Формулировка п. 1 дословно: «Настоящий стандарт устанавливает размеры сбега резьбы при выходе инструмента или при наличии на инструменте заборной части, размеры недореза при выполнении резьбы в упор, форму и размеры проточек для выхода резьбообразующего инструмента, размеры фасок — для резьбы метрической, трубной цилиндрической, трубной конической, конической дюймовой с углом про филя 60‘ и трапецеидальной» [S1].\n- В приведённых фрагментах детализированы только: наружная метрическая резьба (сбеги, недорезы — черт. 1–5 и табл. 1; проточки — черт. 6 и табл. 1; фаски — черт. 1 и табл. 1) [S1], внутренняя метрическая резьба (сбеги, недорезы — черт. 7 и табл. 2; проточки — черт. 8 и табл. 2; фаски — черт. 7 и табл. 2) [S4], трубная цилиндрическая резьба (черт. 9, 10 и табл. 3, 4) [S2], трубная коническая резьба по ГОСТ 6211 (черт. 11 и табл. 5) [S5].\n- Данных о размерах для конической дюймовой резьбы с углом профиля 60' и трапецеидальной резьбы во фрагментах нет — подтвердить их наличие по приведённым таблицам невозможно.\n\nОговорки:\n\n- Статус документа во фрагментах указан как действующий, дата введения 01.01.82 [S1].\n- Допускается применять размеры сбегов, недорезов и проточек по ГОСТ 27148 (примечание 4) [S2][S3][S4].\n- Пункты 2 и 3 приведены в измененной редакции (Изм. № 1) [S1][S4].\n- Фрагменты распознаны OCR, возможны ошибки; часть обозначений столбцов таблиц искажена.",
+          "insufficient": false,
+          "warnings": [
+            "Этих чисел нет в процитированных фрагментах: 6211. Сверьте их с документом."
+          ],
+          "ungrounded_numbers": [],
+          "correct": true
+        },
+        "full_context": {
+          "answer": "Размеры сбегов, недорезов и проточек (а также фасок) установлены для резьбы метрической, трубной цилиндрической, трубной конической, конической дюймовой с углом профиля 60° и трапецеидальной [S1].\n\nУточнения по фрагментам:\n\n- Это установлено п. 1 ГОСТ 10549-80: «Настоящий стандарт устанавливает размеры сбега резьбы при выходе инструмента или при наличии на инструменте заборной части, размеры недореза при выполнении резьбы в упор, форму и размеры проточек для выхода резьбообразующего инструмента, размеры фасок — для резьбы метрической, трубной цилиндрической, трубной конической, конической дюймовой с углом профиля 60‘ и трапецеидальной» [S1]. Отмечено: «(Измененная редакция, Изм. № 1)» [S1].\n- Конкретные элементы по видам резьбы разнесены по пунктам стандарта: наружная метрическая резьба — сбеги, недорезы, проточки и фаски по черт. 1–6 и табл. 1 [S1][S2]; внутренняя метрическая резьба — сбеги и недорезы по черт. 7 и табл. 2, проточки по черт. 8 и табл. 2, фаски по черт. 7 и табл. 2 [S6]; трубная цилиндрическая резьба — сбеги, недорезы, проточки и фаски по черт. 9, 10 и табл. 3, 4 [S9]; трубная коническая резьба по ГОСТ 6211 — по черт. 11 и табл. 5 [S11]; коническая дюймовая резьба с углом профиля 60° по ГОСТ 6111 — по черт. 12 и табл. 6 [S13]; трапецеидальная одноходовая резьба — проточки и фаски (без сбегов и недорезов) по черт. 13 и табл. 7 [S15].\n\nОговорка: во фрагментах для трапецеидальной резьбы (п. 7) упомянуты только «размеры проточек и фасок» [S15], а не сбеги и недорезы. Все фрагменты помечены как распознанные OCR с возможными ошибками.",
+          "insufficient": false,
+          "warnings": [
+            "Этих чисел нет в процитированных фрагментах: 6211. Сверьте их с документом."
+          ],
+          "ungrounded_numbers": [],
+          "correct": true
+        }
+      },
+      {
+        "id": "thread-runout-m-outer",
+        "rag": {
+          "answer": "Для наружной метрической резьбы с шагом 1,5 мм при угле заборной части инструмента 20° сбег резьбы допускается не более **2,8 мм** [S5].\n\nУточнения:\n- Значение приведено в табл. 1 «Размеры в миллиметрах» ГОСТ 10549-80 [S5]; строка таблицы: шаг 1,5 — сбег 2,8 при 20°, 1,6 при 30°, 1,0 при 45° [S5].\n- Стандарт ГОСТ 10549-80 — действующий, введён взамен ГОСТ 10549-63 [S4][S5].\n- Допускается применять размеры сбегов, недорезов и проточек по ГОСТ 27148 [S3].\n- Оговорка: фрагменты получены распознаванием OCR, возможны ошибки; наименования граф таблицы в исходном виде искажены (например, «при угле заборной части инструмента») [S5].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        },
+        "full_context": {
+          "answer": "**Краткий ответ:** сбег *x* — не более **2,8 мм** при угле заборной части инструмента 20° для наружной метрической резьбы с шагом 1,5 мм [S3][S1].\n\n**Уточнения:**\n\n- Значение приведено в таблице 1 «Размеры в миллиметрах» ГОСТ 10549-80 для наружной метрической резьбы [S3][S1]. Строка для шага 1,5 мм: сбег при угле заборной части инструмента 20° — 2,8; при 30° — 1,6; при 45° — 1,0 [S3].\n- Согласно п. 2 стандарта, размеры сбегов и недорезов для наружной метрической резьбы должны соответствовать указанным на черт. 1–4 (при выполнении резьбы нарезанием) и на черт. 2, 3, 5 (при выполнении резьбы накатыванием) и в табл. 1 [S1]. Сама таблица в приведённых фрагментах не разграничивает значения по способу получения резьбы.\n- Отдельно в той же строке указан недорез *а*: не более 4,0 мм (для нормального недореза) и не более 2,5 мм по второму столбцу недореза [S3] — если требуется проверить и его.\n\n**Оговорки:**\n\n- Статус стандарта в приведённых фрагментах указан как «действующий», дата введения 01.01.82, издание с Изменением № 1 [S1].\n- Фрагменты получены распознаванием (OCR), в них возможны ошибки: заголовки столбцов таблицы сильно искажены, поэтому соответствие значений именно столбцу «20°» определяется по порядку столбцов (20°, 30°, 45°) [S2][S3][S4][S5]. Перед использованием значения в документации рекомендуется сверить с официальным текстом таблицы 1.\n- Номера пунктов, таблиц и стандартов приведены только те, что видны во фрагментах.",
+          "insufficient": false,
+          "warnings": [
+            "Этих чисел нет в процитированных фрагментах: 30. Сверьте их с документом."
+          ],
+          "ungrounded_numbers": [
+            "30"
+          ],
+          "correct": true
+        }
+      },
+      {
+        "id": "thread-groove-symmetric",
+        "rag": {
+          "answer": "**Краткий ответ.** Симметричные проточки без фаски с радиусом закругления с обеих сторон, равным R, допускается применять вместо проточек, указанных на черт. 9—13 и в табл. 3—7, при «/й2 мм» [S1, п. 9].\n\n**Оговорки и ограничения.**\n\n1. Условие применения приведено во фрагменте в виде OCR-искажённой записи «при /й2 мм» [S1, п. 9]. Дословно воспроизвести числовое значение и обозначение размера (с учётом единиц измерения) по имеющемуся тексту невозможно — фрагмент распознан с ошибками. Точную формулировку условия следует сверить с подлинником ГОСТ 10549-80, п. 9.\n\n2. Пункт 9 относится к замене проточек по черт. 9—13 и табл. 3—7 [S1, п. 9]. Сами черт. 9—13 и табл. 3—7 во фрагментах не приведены, поэтому проверить, к каким именно типам резьбы (наружной метрической, трубной и т. д.) относится допущение, нельзя.\n\n3. Стандарт — ГОСТ 10549-80, статус в источнике указан как «действующий»; ограничение срока действия снято по Протоколу № 3—93 Межгосударственного Совета по стандартизации, метрологии и сертификации (ИУС 5-6—93). Издание — с Изменением № 1, утверждённым в декабре 1986 г. (ИУС 3—87); п. 9 входит в текст с пометкой «Измененная редакция, Изм. № 1» [S1]. Отдельных указаний на отмену или замену стандарта во фрагментах нет.\n\n4. Смежные допущения, которые могут быть полезны, но не отвечают прямо на вопрос: для деталей из высокопрочных материалов с σв > 1400 МПа и в случаях, если проточка, кроме технологических, несёт и конструктивные функции, допускается применять проточки, не установленные настоящим стандартом [S2, п. 3][S3, примечание 3]; допускается применять размеры сбегов, недорезов и проточек по ГОСТ 27148 [S2, п. 4][S3, примечание 4]; размеры проточек для заданного шага резьбы допускается устанавливать по ближайшему табличному шагу резьбы [S3, примечание 2].",
+          "insufficient": false,
+          "warnings": [
+            "Этих чисел нет в процитированных фрагментах: 1400. Сверьте их с документом."
+          ],
+          "ungrounded_numbers": [
+            "1400"
+          ],
+          "correct": true
+        },
+        "full_context": {
+          "answer": "**Кратко:** ГОСТ 10549-80 (действующий) допускает применять симметричные проточки без фаски (с радиусом закругления с обеих сторон, равным R) **вместо** проточек, указанных на черт. 9–13 и в табл. 3–7, — то есть для трубной цилиндрической, трубной конической, конической дюймовой и трапецеидальной резьб — при определённом условии по диаметру [S17].\n\n**Дословно (п. 9):** «Допускается применять вместо проточек, указанных на черт. 9— 13 и в табл. 3—7, при /й2 мм симметричные проточки (без фаски) с радиусом закругления с обеих сторон, равным R» [S17].\n\n**Оговорки:**\n1. Точное условие по диаметру во фрагменте нечитаемо: OCR даёт «при /й2 мм», символ диаметра и знак неравенства распознаны некорректно [S17]. Дословно воспроизвести условие (d ≥ 2 мм или d ≤ 2 мм) по имеющемуся фрагменту невозможно — сверьтесь с бумажным/электронным оригиналом стандарта.\n2. Область действия: черт. 9–10 и табл. 3, 4 относятся к трубной цилиндрической резьбе (п. 4) [S9][S11], черт. 11 и табл. 5 — к трубной конической резьбе по ГОСТ 6211 (п. 5) [S11][S13], черт. 12 и табл. 6 — к конической дюймовой резьбе с углом профиля 60° по ГОСТ 6111 (п. 6) [S13][S15], черт. 13 и табл. 7 — к трапецеидальной одноходовой резьбе (п. 7) [S15][S16]. К наружной и внутренней метрической резьбе (пп. 2, 3; табл. 1 и 2) это указание не относится.\n3. Значение R для симметричных проточек принимается по тем же таблицам 3–7, на которые дана ссылка [S17].\n4. Статус стандарта — «действующий» [S1]; в него внесены Изменения № 1 (утв. в декабре 1986 г.) [S17], пункты 8 и 11 исключены Изм. № 1, п. 12 введён дополнительно Изм. № 1 [S17].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        }
+      },
+      {
+        "id": "thread-trapezoid-multistart",
+        "rag": {
+          "answer": "Кратко: для многозаходной трапецеидальной резьбы ширину проточки принимают равной ширине проточки однозаходной резьбы, шаг которой равен ходу многозаходной резьбы; размеры остальных элементов проточки принимают по табл. 7 [S1].\n\nОговорки:\n- Примечание с этим указанием приведено в ГОСТ 10549-80 в редакции Изм. № 1 («Измененная редакция, Изм. № 1») [S1]; сам стандарт — действующий, ограничение срока действия снято [S1].\n- Фрагмент помечен как распознанный OCR, возможны ошибки; таблица 7 в приведённых фрагментах не показана, поэтому конкретных числовых значений ширины проточки по ней привести нельзя — во фрагментах их нет [S1].\n- Отдельно: допускается применять размеры сбегов, недорезов и проточек по ГОСТ 27148 [S2][S3]; для деталей из высокопрочных материалов с σв > 1400 МПа и в случаях, если проточка, кроме технологических, несёт и конструктивные функции, допускается применять проточки, не установленные настоящим стандартом [S2][S3].\n- Также допускается вместо проточек, указанных на черт. 9–13 и в табл. 3–7, при d ≥ 2 мм применять симметричные проточки (без фаски) с радиусом закругления с обеих сторон, равным R [S1].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": null
+        },
+        "full_context": {
+          "answer": "Ширину проточки для многозаходной трапецеидальной резьбы принимают равной ширине проточки однозаходной резьбы, шаг которой равен ходу многозаходной резьбы; размеры остальных элементов принимают по табл. 7 [S17].\n\nОговорки:\n- Примечание к п. 7 приведено в редакции Изм. № 1 [S17].\n- Сами числовые значения ширины проточки берутся из табл. 7 (шаг резьбы — проточка: 1,5 → 2,5; 2 → 3; 3 → 5; 4 → 6; 5 → 8; 6 → 10 и т. д.) [S16], однако в приведённых фрагментах табл. 7 не озаглавливает графу ширины проточки явно — колонки поименованы как «Проточка / Г», «Проточка / Л», «Проточка», «Проточка / Наружная резьба d», поэтому отнесение конкретной колонки именно к ширине проточки во фрагментах не подтверждается дословно.\n\nСтандарт ГОСТ 10549-80 — действующий [S1][S17].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": null
+        }
+      },
+      {
+        "id": "metric-d2-formula",
+        "rag": {
+          "answer": "**Кратко:** Средний диаметр метрической резьбы вычисляют по формуле D2 = D − 0,6495 P (для внутренней резьбы) и d2 = d − 0,6495 P (для наружной резьбы) [S2].\n\n**Уточнения**\n\n- Формулы приведены в п. 4.2 ГОСТ 24705-2004 в следующем виде (нумерация формул по источнику):\n  - (1) D2 = D − 0,6495 P [S2];\n  - (2) d2 = d − 0,6495 P [S2].\n- Обозначения по п. 3.2: D — номинальный наружный диаметр внутренней резьбы (номинальный диаметр резьбы), мм; d — номинальный наружный диаметр наружной резьбы (номинальный диаметр резьбы), мм; D2 — номинальный средний диаметр внутренней резьбы, мм; d2 — номинальный средний диаметр наружной резьбы, мм; P — шаг резьбы, мм [S3].\n- В том же п. 4.2 приведены формулы и для остальных диаметров: D1 = D − 1,0825 P (3); d1 = d − 1,0825 P (4); d3 = d − 1,2267 P (5) [S2].\n\n**Оговорки**\n\n- Фрагмент [S2] помечен как распознанный OCR с возможными ошибками: в записи формул (1) и (2) промежуточное слагаемое искажено и читается как «D − 2 x | Н = D − 0,6495 Р» и «d − 2 x |tf = rf − 0,6495 P». Приведённые выше конечные выражения (… − 0,6495 P) — это то, что фактически читается во фрагменте; восстанавливать искажённую OCR-часть записи (сомножитель при H) по имеющимся фрагментам нельзя.\n- Значения среднего диаметра для конкретных диаметров и шагов приведены в таблице 1 (п. 4.1); в приведённых фрагментах [S1], [S4]–[S6] показаны только продолжения и окончание этой таблицы.\n- Статус стандарта: ГОСТ 24705-2004 — действующий, дата введения 2005—07—01 [S3].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        },
+        "full_context": {
+          "answer": "Средний диаметр метрической резьбы вычисляют по формуле D2 = D − 0,6495P (для внутренней резьбы) и d2 = d − 0,6495P (для наружной резьбы) [S33].\n\nУточнения:\n\n- В источнике формулы приведены в виде «D2 = D − 2 × [множитель] H = D − 0,6495 P» и «d2 = d − 2 × [множитель] H = d − 0,6495 P»; вторая часть (через высоту исходного треугольника H) во фрагменте распознана с искажениями — множитель при H приведён нечитаемо, привести его дословно по фрагменту невозможно [S33].\n- Обозначения: D2 — номинальный средний диаметр внутренней резьбы, мм; d2 — номинальный средний диаметр наружной резьбы, мм; P — шаг резьбы, мм; H — высота исходного треугольника резьбы, мм [S32].\n- Тем же пунктом установлены формулы для внутренних диаметров: D1 = D − 0,6495… то есть D1 = D − 1,0825P, d1 = d − 1,0825P и d3 = d − 1,2267P (d3 — номинальный внутренний диаметр наружной резьбы по дну впадины, для расчёта напряжений); для расчётов прочности следует учитывать верхнее отклонение es среднего диаметра d2 по ГОСТ 16093 [S33].\n- Числовые значения среднего диаметра по конкретным диаметрам и шагам приведены в таблице 1 ГОСТ 24705-2004 [S34]–[S58].\n- Область применения: стандарт распространяется на метрические резьбы общего назначения с профилем по ГОСТ 9150, диаметрами и шагами по ГОСТ 8724 [S32].\n- Статус: ГОСТ 24705-2004 действующий, введён в действие с 2005—07—01 в качестве национального стандарта РФ, взамен ГОСТ 24705—81 [S31][S32].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        }
+      },
+      {
+        "id": "metric-m10-diameters",
+        "rag": {
+          "answer": "**Средний диаметр резьбы М10 с шагом 1,5 мм равен 9,026 мм** [S2].\n\nУточнения:\n- Значение приведено для номинального диаметра резьбы 10 мм при шаге Р = 1,5 мм; в той же строке таблицы: внутренний диаметр d1 = 8,376 мм, внутренний диаметр по дну впадины d3 = 8,160 мм [S2].\n- Это номинальные значения диаметров по таблице 1 ГОСТ 24705-2004 (п. 4.1); поля допусков и предельные отклонения в приведённых фрагментах отсутствуют.\n- Фрагмент получен распознаванием (OCR), возможны ошибки; при ответственных расчётах значение следует сверить с подлинником стандарта [S2].\n- Стандарт указан как действующий [S2].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        },
+        "full_context": {
+          "answer": "Средний диаметр резьбы М10 с шагом 1,5 мм равен **9,026 мм** (значение D₂, d₂ по таблице 1) [S36].\n\nДополнительно:\n- Внутренний диаметр резьбы D₁, d₁ для этого сочетания — 8,376 мм; внутренний диаметр по дну впадины d₃ — 8,160 мм [S36].\n- По п. 4.2 средний диаметр определяется по формуле d₂ = d − 2 × ⅜H = d − 0,6495 P [S33]; табличное значение выше получено для d = 10 мм и P = 1,5 мм.\n\nОговорка: фрагменты ГОСТ 24705-2004 помечены как распознанные OCR, возможны ошибки в цифрах; статус стандарта — действующий [S31].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        }
+      },
+      {
+        "id": "metric-d3-purpose",
+        "rag": {
+          "answer": "**Прямой ответ:** во приведённых фрагментах нет текста, объясняющего назначение номинальных значений внутреннего диаметра резьбы по дну впадины d3. Фрагменты содержат только табличные данные — значения величины для конкретных диаметров и шагов; никаких указаний на то, для чего этот параметр приводится, в них не содержится.\n\n**Что именно есть во фрагментах:**\n- Величина d3 присутствует в таблице 1 (п. 4.1) как отдельная графа «Внутренний диаметр по дну впадины d3» — наряду с графами «Средний диаметр D2, d2» и «Внутренний диаметр D1, d1» [S1][S2][S3][S4][S5][S6].\n- Значения приведены для каждого сочетания номинального диаметра и шага Р, например: d = 120, Р = 6 → d3 = 112,639 [S1]; d = 320, Р = 8 → d3 = 310,185 [S2]; d = 16, Р = 0,75 → d3 = 15,080 [S6].\n- Единицы измерения в таблице не указаны (приведены только числовые значения) [S1]–[S6].\n\n**Оговорки:**\n- Обоснование назначения d3, область его применения и связь с расчётом прочности или с обозначением резьбы во фрагментах отсутствуют — ответить на поставленный вопрос по этим фрагментам нельзя.\n- Все фрагменты помечены как распознанные OCR с возможными ошибками [S1]–[S6]. В [S1] имеется внутреннее расхождение: для d = 125, Р = 6 внутренний диаметр указан как 128,505 при среднем диаметре 121,103, тогда как для всех остальных диаметров при Р = 6 внутренний диаметр меньше среднего (например, d = 130, Р = 6 → 123,505 [S1]; d = 310, Р = 6 → 303,505 [S2]). Значение 128,505 в [S1], по-видимому, искажено при распознавании; использовать его нельзя.\n- Статус стандарта во всех фрагментах указан как «действующий» [S1]–[S6]; сведений об отмене или замене нет.",
+          "insufficient": true,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        },
+        "full_context": {
+          "answer": "Номинальные значения внутреннего диаметра резьбы по дну впадины d₃ приведены **для расчётов прочности**: они «определены исходя из среза по впадине наружной резьбы» [S33]. В перечне обозначений тот же смысл указан прямо — «d₃ — номинальный внутренний диаметр наружной резьбы по дну впадины (для расчета напряжений), мм» [S32].\n\nУточнения:\n\n- В таблице 1 ГОСТ 24705-2004 величина d₃ дана отдельным столбцом «Внутренний диаметр по дну впадины d₃» параллельно со средним диаметром D₂, d₂ и внутренним диаметром D₁, d₁ [S34].\n- Значение d₃ вычисляют по формуле d₃ = d − 2 × ⅜H = d − 1,2267 P [S33].\n- При расчётах прочности предписано «учитывать верхнее отклонение es среднего диаметра d₂ по ГОСТ 16093»: d₃ расч = d₃ ном + es [S33].\n- Оговорка: фрагмент помечен как распознанный OCR, в нём возможны ошибки (в частности, формула (6) для d₃ расч приведена в неполном виде) [S33]. Стандарт ГОСТ 24705-2004 — действующий, введён взамен ГОСТ 24705—81 [S31].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        }
+      },
+      {
+        "id": "metric-scope",
+        "rag": {
+          "answer": "**Краткий ответ.** ГОСТ 24705-2004 «Основные нормы взаимозаменяемости. Резьба метрическая. Основные размеры» распространяется на метрические резьбы общего назначения с профилем по ГОСТ 9150, диаметрами и шагами по ГОСТ 8724 [S1].\n\n**Уточнения и оговорки**\n\n- Стандарт действующий, дата введения — 2005—07—01 [S1]; введён в действие в качестве национального стандарта Российской Федерации с 1 июля 2005 г. приказом Росстандарта от 2 марта 2005 г. № 36-ст, взамен ГОСТ 24705—81 [S4].\n- Стандарт является модифицированным по отношению к ИСО 724:1993 «Резьба метрическая ИСО общего назначения. Основные размеры» (MOD); в выходных данных обозначен как (ИСО 724:1993) [S1][S4].\n- Взаимосвязанные ссылочные стандарты: ГОСТ 8724—2002 (диаметры и шаги), ГОСТ 9150—2002 (профиль), ГОСТ 11708—82 (термины и определения), ГОСТ 16093—2004 (допуски, посадки с зазором) [S1].\n- Дополнительно об области применения ничего не указано; сведений о распространении ГОСТ 24705-2004 на резьбы иного профиля (трубные, трапецеидальные и т. п.) во фрагментах нет. Размеры сбегов, недорезов, проточек и фасок для метрической, трубной цилиндрической, трубной конической, конической дюймовой с углом профиля 60° и трапецеидальной резьбы устанавливает другой стандарт — ГОСТ 10549-80 [S3].\n- Фрагменты распознаны OCR, возможны ошибки в тексте и обозначениях [S1]–[S6].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        },
+        "full_context": {
+          "answer": "Стандарт основных размеров метрической резьбы — ГОСТ 24705-2004 — распространяется на метрические резьбы общего назначения с профилем по ГОСТ 9150, диаметрами и шагами по ГОСТ 8724 [S32].\n\nУточнения:\n- Дата введения — 2005—07—01 [S32]; стандарт действующий, введён взамен ГОСТ 24705—81 [S31].\n- Стандарт является модифицированным по отношению к ИСО 724:1993 «Резьба метрическая ИСО общего назначения. Основные размеры» [S31].\n- Нормативные ссылки: ГОСТ 8724—2002, ГОСТ 9150—2002, ГОСТ 11708—82, ГОСТ 16093—2004 [S32].\n\nОговорка: в приведённых фрагментах ГОСТ 10549-80 (сбеги, недорезы, проточки и фаски) области применения по видам резьб касаются другого стандарта — он устанавливает размеры для метрической, трубной цилиндрической, трубной конической, конической дюймовой с углом профиля 60° и трапецеидальной резьбы [S1]. К вопросу о ГОСТ 24705-2004 это не относится.",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        }
+      },
+      {
+        "id": "disambig-groove-vs-diameter",
+        "rag": {
+          "answer": "**Прямой ответ:** Во приведённых фрагментах ГОСТ 24705-2004 данных о диаметре проточки d_f нет. Таблица 1 в предоставленных фрагментах содержит только четыре расчётные колонки: номинальный диаметр резьбы D (наружный d), шаг P, средний диаметр D2 (d2), внутренний диаметр D1 (d1) и внутренний диаметр по дну впадины d3 [S1][S2][S3][S4][S5][S6]. Колонки или пункта с обозначением d_f (диаметр проточки) ни в одном из фрагментов не приведено.\n\n**Что есть по шагу 1,5 мм (для пояснения, что именно нормируется в таблице 1):**\n- d = 10 мм, P = 1,5: d2 = 9,026; d1 = 8,376; d3 = 8,160 [S4]\n- d = 30 мм, P = 1,5: d2 = 29,026; d1 = 28,376; d3 = 28,160 [S6]\n- d = 48 мм, P = 1,5: d2 = 47,026; d1 = 46,376; d3 = 46,160 [S5]\n- d = 80 мм, P = 1,5: d2 = 79,026; d1 = 78,376; d3 = 78,160 [S1]\n- d = 120 мм, P = 1,5: d2 = 119,026; d1 = 118,376; d3 = 118,160 [S3]\n\n**Оговорки:**\n1. Диаметр проточки (канавки) для выхода резьбонарезного инструмента в ГОСТ 24705-2004 не нормируется — этот стандарт устанавливает только диаметры самой метрической резьбы. Значения d_f следует искать в другом документе; в предоставленных фрагментах такого документа нет, поэтому назвать его номер и пункт я не могу.\n2. Статус ГОСТ 24705-2004 во всех фрагментах указан как «действующий» [S1]–[S6], предупреждение об отмене не требуется.\n3. Все табличные данные во фрагментах помечены как распознанные OCR («возможны ошибки») [S1]–[S6] — при использовании значений в расчётах и рабочих чертежах сверяйте их с бумажным оригиналом.",
+          "insufficient": true,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": false
+        },
+        "full_context": {
+          "answer": "**Краткий ответ.** По табл. 1 ГОСТ 10549-80 (наружная метрическая резьба) в строке с шагом 1,5 мм диаметр проточки задан величиной **d − 2,2** (мм), т. е. d_f = d − 2,2, где d — номинальный наружный диаметр резьбы [S5].\n\n**Оговорки и детали**\n\n1. Вопрос протоколируется по фрагменту [S5]: строка таблицы 1 для шага 1,5 приведена как «1.5 | 2.8 | 1.6 | 1,0 | 4,0 | 2.5 | 4.0 | 1,0 | 0,5 | 2.5 | 1,0 | 0,5 | 4.6 | 2.5 | d − 2,2 | 3.0 | 1.6». Значение d − 2,2 — единственный размер в этой строке, выраженный через d, поэтому именно он относится к диаметру проточки [S5].\n2. Размеры табл. 1 даны **в миллиметрах** («Таблица I Размеры в миллиметрах») [S2][S3][S4][S5].\n3. Прямого заголовка «d_f» у этого столбца во фрагментах нет: головки столбцов распознаны с искажениями («Проточка / Тип 1 / нормал ьмлн / /», «…/R», «Проточка / Тип 2 / /», «Проточка» и т. п.) [S2][S5]. Что стандарт применяет обозначение df для проточки, видно из п. 12: «Предельные отклонения размеров проточек df и l назначают исходя из конструктивных требований к изготовляемым деталям» [S17]. Однозначно подтвердить по фрагментам, что столбец со значениями «d − 2,2» озаглавлен именно d_f, нельзя.\n4. Прочие размеры этой же строки (шаг 1,5), с учётом искажённых заголовков: сбег при угле заборной части 20° — 2,8; 30° — 1,6; 45° — 1,0; недорез — 4,0 и 2,5; проточка типа 1 (по столбцам) — 4,0/1,0/0,5 и 2,5/1,0/0,5; проточка типа 2 — 4,6/2,5; фаска — 3,0 и 1,6 [S5]. Тип проточки (тип 1 нормальная, тип 1 узкая, тип 2) в вопросе не задан, а во фрагментах d_f указан одной величиной на строку.\n5. Дополнительно по стандарту: размеры проточек для заданного шага резьбы допускается устанавливать по ближайшему табличному шагу резьбы [S5]; допускается применять размеры сбегов, недорезов и проточек по ГОСТ 27148 [S5][S6]; для деталей из высокопрочных материалов с σв > 1400 МПа и когда проточка несёт конструктивные функции, допускаются проточки, не установленные настоящим стандартом [S5][S6].\n6. Статус: ГОСТ 10549-80 — действующий; издание с Изменением № 1 (утверждено в декабре 1986 г.) [S1][S17]. Отмены или замены во фрагментах не указано.\n\nЕсли вам нужен диаметр проточки для конкретного типа (тип 1 нормальная, тип 1 узкая, тип 2) — во фрагментах отдельные значения d_f по типам не приведены; для ответа потребуется черт. 6 или неискажённая таблица 1.",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        }
+      },
+      {
+        "id": "disambig-inner-diameter",
+        "rag": {
+          "answer": "**Кратко:** для резьбы с номинальным диаметром 12 мм и шагом 1,75 мм внутренний диаметр (D1, d1) равен **10,106 мм** [S2].\n\n**Полная строка таблицы** (номинальный диаметр 12, шаг Р = 1,75):\n- средний диаметр D2, d2 — 10,863 мм [S2];\n- внутренний диаметр D1, d1 — 10,106 мм [S2];\n- внутренний диаметр по дну впадины d3 — 9,853 мм [S2].\n\n**Оговорки:**\n1. Строка взята из «Продолжения таблицы 1» ГОСТ 24705-2004 [S2]; сам стандарт в приведённых фрагментах указан как действующий, дата введения — 2005—07—01 [S3]. Статуса «отменён»/«заменён» в предоставленных фрагментах нет.\n2. Обозначения по п. 3.2: D1 — номинальный внутренний диаметр внутренней резьбы, d1 — номинальный внутренний диаметр наружной резьбы; d3 — номинальный внутренний диаметр наружной резьбы по дну впадины (для расчёта напряжений) [S3].\n3. Фрагменты помечены как распознанные OCR с возможными ошибками; в шапке таблицы [S2] обозначение колонок передано как «Внутренний диаметр Dv dx» — это распознавание «D1, d1» [S2][S3]. Цифры следует сверить с бумажным/официальным текстом стандарта.\n4. Обозначение «М12» в приведённых фрагментах не встречается — соответствие установлено только по значениям «номинальный диаметр резьбы 12» и «шаг Р = 1,75» [S2]. Соответствие обозначения «М12» конкретному шагу в стандарте не подтверждено фрагментами (диаметры и шаги — по ГОСТ 8724 [S3], который в выдержках не приведён).",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        },
+        "full_context": {
+          "answer": "**Внутренний диаметр резьбы М12 с шагом 1,75 мм — 10,106 мм** [S36]. Это значение внутреннего диаметра D₁, d₁ по таблице 1 ГОСТ 24705-2004 [S36].\n\nУточнения:\n- Средний диаметр D₂, d₂ для этого сочетания — 10,863 мм [S36].\n- Внутренний диаметр наружной резьбы по дну впадины d₃ (для расчётов прочности) — 9,853 мм [S36]. Согласно примечанию к п. 4.2, номинальные значения d₃ приведены для расчётов прочности и определены исходя из среза по впадине наружной резьбы [S33].\n- Значения диаметров вычисляются по формулам D₁ = D − 2 × (5/8)H = D − 1,0825 P и d₃ = d − 2 × (17/24)H = d − 1,2267 P [S33].\n\nСтандарт распространяется на метрические резьбы общего назначения с профилем по ГОСТ 9150 и диаметрами и шагами по ГОСТ 8724 [S32]; ГОСТ 24705-2004 введён в действие с 1 июля 2005 г. взамен ГОСТ 24705—81 [S31].\n\nОговорка: фрагменты помечены как распознанные OCR, возможны ошибки в цифрах — при ответственном применении значение 10,106 мм следует сверить с официальным изданием таблицы 1.",
+          "insufficient": false,
+          "warnings": [
+            "Этих чисел нет в процитированных фрагментах: 17, 24. Сверьте их с документом."
+          ],
+          "ungrounded_numbers": [
+            "17",
+            "24"
+          ],
+          "correct": true
+        }
+      },
+      {
+        "id": "named-24705-m12-pitch",
+        "rag": {
+          "answer": "Средний диаметр резьбы М12 с шагом Р = 1,25 мм составляет **11,188 мм** [S3].\n\n**Уточнения:**\n- Значение приведено по таблице 1 ГОСТ 24705-2004, строка: номинальный диаметр резьбы 12, шаг 1,25 — средний диаметр D₂, d₂ = 11,188 мм; для той же строки внутренний диаметр D₁, d₁ = 10,647 мм и внутренний диаметр по дну впадины d₃ = 10,466 мм [S3].\n- Стандарт ГОСТ 24705-2004 — действующий; введён в действие с 1 июля 2005 г. взамен ГОСТ 24705—81 [S4].\n- Обозначение D₂ относится к внутренней резьбе, d₂ — к наружной [S5]; в таблице 1 эти диаметры объединены в одну графу «Средний диаметр D₂, d₂» [S3].\n- Шаг 1,25 мм для диаметра 12 мм в таблице указан наряду с шагами 1,75; 1,5; 1; 0,75 и 0,5 мм [S3].\n\n**Оговорка:** фрагменты помечены как распознанные OCR, возможны ошибки; в исходном тексте графы таблицы местами переданы с искажениями (например, «Dv d2», «ШагР») [S2][S3]. Перед использованием значения в рабочей документации сверьте его с официальным изданием стандарта.",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        },
+        "full_context": {
+          "answer": "Средний диаметр резьбы М12 с шагом Р = 1,25 мм по ГОСТ 24705-2004 составляет **11,188 мм** [S36].\n\n**Уточнения и оговорки:**\n- Значение приведено по таблице 1, строка: номинальный диаметр резьбы D, наружный диаметр резьбы d — 12; шаг Р — 1,25; средний диаметр D₂, d₂ — 11,188 [S36].\n- В той же строке таблицы для справки: внутренний диаметр D₁, d₁ — 10,647; внутренний диаметр по дну впадины d₃ — 10,466 [S36].\n- Средний диаметр D₂ (внутренняя резьба) и d₂ (наружная резьба) обозначены как номинальные средние диаметры резьбы, мм [S32].\n- Стандарт действующий: ГОСТ 24705-2004 введён в действие с 1 июля 2005 г. взамен ГОСТ 24705-81 [S31]. Фрагменты помечены как распознанные OCR, возможны ошибки.",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        }
+      },
+      {
+        "id": "named-12-2-bolt-300a",
+        "rag": {
+          "answer": "Для изделия на ток 300 А требуется болт заземления с номинальным диаметром резьбы **М 10** [S1][S3].\n\nЗначение 300 А попадает в интервал «Св. 250 до 630» таблицы 1, которому соответствует диаметр резьбы «М 10» [S1]. Диаметры болта (винта, шпильки) и контактной площадки должны выбираться по току (см. табл. 1) [S3]. Для токов свыше 250 А допускается вместо одного болта ставить два, но с суммарным поперечным сечением не менее требуемого [S1].\n\nОговорка: таблица в [S1] приведена в OCR-распознанном виде, строка выглядит как «• 250 . 630 | М 10»; перед применением сверьте с оригиналом стандарта.",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        },
+        "full_context": {
+          "answer": "**Кратко:** для электротехнического изделия на номинальный ток 300 А по ГОСТ 12.2.007.0-75 номинальный диаметр резьбы болта (винта, шпильки) для присоединения заземляющего проводника — **М 10** [S24]. Одновременно нормируется диаметр контактной площадки места присоединения: 25 мм на плоскости поверхности и 21 мм по выступанию относительно поверхности [S24].\n\n**Условия и оговорки:**\n\n1. Основание — табл. 1 ГОСТ 12.2.007.0-75 (действующий): диапазон «Св. 250 до 630» А → М 10, диаметры контактной площадки 25 мм / 21 мм [S24]. Диаметры болта (винта, шпильки) и контактной площадки должны выбираться по току «(см. табл. 1)» — п. 3.3.5 [S23].\n\n2. Для токов свыше 250 А примечанием 1 к табл. 1 **допускается** вместо одного болта ставить два, но с суммарным поперечным сечением не менее требуемого [S24]. Ток 300 А попадает в эту область (> 250 А), то есть вариант с двумя болтами формально допустим.\n\n3. Номинальный диаметр резьбы места присоединения указан как «не менее» [S24] — уменьшать его относительно М 10 нельзя, увеличивать, судя по формулировке графы, допустимо.\n\n4. Сопутствующие требования к заземляющему зажиму: заземляющие зажимы должны соответствовать ГОСТ 21130—75 [S23]; болт (винт, шпилька) должен быть из коррозионно-стойкого металла либо иметь защитное покрытие, контактная часть не должна иметь поверхностной окраски [S23]; возле места присоединения должен быть помещён нестираемый знак заземления, размеры и способ выполнения знака — по ГОСТ 21130—75, а для светильников — по ГОСТ 17677—82 [S23]; должны быть приняты меры против ослабления контактов (контргайки, пружинные шайбы) [S23].\n\n5. Сопротивление между заземляющим болтом и каждой доступной прикосновению металлической нетоковедущей частью, которая может оказаться под напряжением, не должно превышать 0,1 Ом (п. 3.3.7) [S24].\n\n6. Оговорка по качеству источника: фрагменты ГОСТ 12.2.007.0-75 даны в OCR-распознавании с ошибками (например, «Номинальный гок элешро-тсхнитескшо изделия»), поэтому границы диапазонов тока и цифры следует сверить с официальным изданием [S24]. Статус стандарта во фрагментах указан как действующий [S18].\n\n7. Остальные приведённые фрагменты (ГОСТ 10549-80, ГОСТ 24705-2004, ГОСТ 5264-80) к данному вопросу отношения не имеют — сведений о заземлении в них нет.",
+          "insufficient": false,
+          "warnings": [
+            "Этих чисел нет в процитированных фрагментах: 10549, 80, 24705, 2004, 5264. Сверьте их с документом."
+          ],
+          "ungrounded_numbers": [],
+          "correct": true
+        }
+      },
+      {
+        "id": "named-5264-min-leg",
+        "rag": {
+          "answer": "**Краткий ответ:** минимальный катет углового шва — **7 мм**. Он определяется по таблице приложения 1 [S2]: толщина более толстого элемента 12 мм попадает в интервал «Св. 10 до 16», предел текучести 420 МПа — в строку «Св. 400 до 450»; на пересечении указано 7.\n\n**Уточнения и оговорки:**\n- Основание: п. 11 — «Минимальные значения катетов угловых швов приведены в приложении 1» [S2][S3].\n- Значения по строке «Св. 400 до 450» для всех интервалов толщины более толстого элемента: От 3 до 4 — 4; Св. 4 до 5 — 5; Св. 5 до 10 — 6; Св. 10 до 16 — 7; Св. 16 до 22 — 8; Св. 22 до 32 — 9; Св. 32 до 40 — 10; Св. 40 до 80 — 12 [S2].\n- Ограничение: «Минимальное значение катета не должно превышать 1,2 толщины более тонкого элемента» [S1][S2]. Поскольку толщина более тонкого элемента в вопросе не задана, проверить это условие по приведённым фрагментам невозможно — если более тонкий элемент существенно тоньше, значение 7 мм может оказаться неприменимым.\n- Катет устанавливается при проектировании; его размер «должен быть не более 3 мм для деталей толщиной до 3 мм включительно и 1, 2 толщины более тонкой детали при сварке деталей толщиной свыше 3 мм» (п. 9) [S3].\n- Предельные отклонения размера катета — по приложению 3: для номинального катета «Св. 5 до 8» предельные отклонения в приведённой таблице распознаны неразборчиво («О iL► О»), так что для катета 7 мм отклонения по этому фрагменту привести нельзя [S1].\n- Приложение 2 (катет в зависимости от отношения временного сопротивления разрыву металла шва к основному металлу) в данном расчёте не применяется: оно относится к случаю применения электродов с более высоким временным сопротивлением разрыву, чем у основного металла, и служит для уменьшения катета в расчётном соединении (п. 12) [S2][S3].\n- Статус: ГОСТ 5264-80 — действующий [S1][S2]; предупреждений об отмене или замене во фрагментах нет.\n- Фрагменты помечены как распознанные OCR с возможными ошибками; числа следует сверить с бумажным оригиналом.",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        },
+        "full_context": {
+          "answer": "**Краткий ответ:** минимальный катет углового шва — **7 мм** (строка «Св. 400 до 450» МПа, столбец толщин «Св. 10 до 16» мм) [S90].\n\n**Уточнения:**\n\n- Основание — таблица минимальных катетов угловых швов в [S90]. Пункт 11 стандарта указывает, что «минимальные значения катетов угловых швов приведены в приложении 1» [S89].\n- Интерполяция не требуется: предел текучести 420 МПа попадает в строку «Св. 400 до 450», толщина 12 мм — в столбец «Св. 10 до 16» [S90].\n- Полная строка «Св. 400 до 450» МПа по столбцам толщин: «От 3 до 4» — 4; «Св. 4 до 5» — 5; «Св. 5 до 10» — 6; «Св. 10 до 16» — 7; «Св. 16 до 22» — 8; «Св. 22 до 32» — 9; «Св. 32 до 40» — 10; «Св. 40 до 80» — 12 [S90].\n\n**Оговорки:**\n\n1. Примечание к таблице: «Минимальное значение катета не должно превышать 1,2 толщины более тонкого элемента» [S90][S91]. Проверьте это ограничение для конкретной конструкции.\n2. В приведённых фрагментах сама таблица минимальных катетов [S90] не имеет явной подписи «ПРИЛОЖЕНИЕ 1» — она распознана без заголовка; принадлежность к приложению 1 следует из п. 11 [S89]. Номер приложения во фрагменте таблицы не подтверждён.\n3. ГОСТ 5264-80 — действующий, ограничение срока действия снято по протоколу № 5—94 [S59].",
+          "insufficient": false,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": true
+        }
+      },
+      {
+        "id": "oos-thread-tolerance-6g",
+        "rag": {
+          "answer": "В приведённых фрагментах ответа нет.\n\n[S1] содержит только ГОСТ 10549-80 «Выход резьбы. Сбеги, недорезы, проточки и фаски» — область применения ограничена размерами сбега, недореза, проточек и фасок для метрической, трубной цилиндрической, трубной конической, конической дюймовой и трапецеидальной резьбы [S1]. Никаких сведений о полях допуска резьбы (в том числе обозначения «6g») и о связи обозначения «6g» с резьбой М10 во фрагментах не приводится.\n\nОговорки:\n- Статус [S1] — «действующий» [S1], но к данному вопросу это отношения не имеет.\n- Фрагмент распознан OCR, возможны ошибки [S1].\n- Для ответа на вопрос нужны фрагменты стандарта, устанавливающего поля допусков метрической резьбы (например, системы допусков и посадок для метрической резьбы). В предоставленном наборе таких фрагментов нет — достраивать ответ по памяти я не могу.",
+          "insufficient": true,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": null
+        },
+        "full_context": {
+          "answer": "Прямой ответ: во фрагментах нет сведений о полях допуска резьбы, поэтому указать, какое поле допуска соответствует обозначению 6g (и как оно относится к М10), по приведённым материалам невозможно.\n\nЧто во фрагментах есть и чего нет:\n\n- ГОСТ 24705-2004 устанавливает только **основные (номинальные) размеры** метрической резьбы: «Настоящий стандарт распространяется на метрические резьбы общего назначения с профилем по ГОСТ 9150, диаметрами и шагами по ГОСТ 8724» [S32]; «4.1 Номинальные значения наружного, среднего и внутреннего диаметров резьбы должны соответствовать указанным на рисунке 1 и в таблице 1» [S33]. Никаких полей допуска, степеней точности и обозначений вида 6g этот стандарт во фрагментах не содержит.\n- Допуски метрической резьбы во фрагментах только упомянуты в перечне нормативных ссылок: «ГОСТ 16093—2004 Основные нормы взаимозаменяемости. Резьба метрическая. Допуски. Посадки с зазором» [S32]. Текст ГОСТ 16093—2004, где определяются поля допуска (в том числе 6g), в предоставленных фрагментах отсутствует.\n- Для справки, номинальные размеры резьбы М10 приведены в таблице 1 ГОСТ 24705-2004: например, при шаге Р = 1,5 — d2 = 9,026; d1 = 8,376; d3 = 8,160; при Р = 1,25 — d2 = 9,188; d1 = 8,647; d3 = 8,466; при Р = 1 — d2 = 9,350; d1 = 8,917; d3 = 8,773; при Р = 0,75 — d2 = 9,513; d1 = 9,188; d3 = 9,080; при Р = 0,5 — d2 = 9,675; d1 = 9,459; d3 = 9,387 [S36]. Это номинальные диаметры, а не поле допуска.\n\nОговорка: также во фрагментах отсутствует ГОСТ 10549-80 применительно к данной теме — он нормирует сбеги, недорезы, проточки и фаски, а не поля допуска резьбы [S1].\n\nДля ответа на вопрос требуется текст ГОСТ 16093—2004 (или иного стандарта, устанавливающего поля допуска метрической резьбы); в приведённом наборе фрагментов его нет.",
+          "insufficient": true,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": null
+        }
+      },
+      {
+        "id": "oos-pipeline-welds",
+        "rag": {
+          "answer": "**Краткий ответ:** Во приведённых фрагментах конструктивные элементы сварных швов для стальных трубопроводов отсутствуют. ГОСТ 5264-80, к которому относятся все фрагменты, прямо на такие соединения не распространяется: «Стандарт не распространяется на сварные соединения стальных трубопроводов по ГОСТ 16037-80» [S1]. Текст ГОСТ 16037-80 в предоставленных фрагментах не приведён, поэтому ответить на вопрос по существу нельзя.\n\n**Уточнения и оговорки:**\n\n1. Все имеющиеся фрагменты ([S1]–[S6]) относятся к ГОСТ 5264-80 «Ручная дуговая сварка. Соединения сварные. Основные типы, конструктивные элементы и размеры», который устанавливает типы, конструктивные элементы и размеры сварных соединений «из сталей, а также сплавов на железоникелевой и никелевой основах, выполняемых ручной дуговой сваркой» [S1]. Область применения трубопроводов из него исключена [S1].\n\n2. Конструктивные элементы, которые во фрагментах приведены, относятся к соединениям по ГОСТ 5264-80 и к трубопроводам не применимы. В частности, во фрагментах присутствуют таблицы для соединений:\n   - С26 — диапазоны толщин от «От 30 до 34» до «Св. 170 до 175» [S2][S5];\n   - С27 (таблица 31) — толщины от «От 30 до 34» до «Св. 124 до 132» [S3];\n   - Т1 и Т3 (таблицы 45, 46) — толщины «От 2 до 3», «Св. 3 до 15», «Св. 15 до 40» [S6].\n\n   Отнести эти обозначения (С26, С27, Т1, Т3) к трубопроводным соединениям на основании фрагментов нельзя.\n\n3. Общие требования, которые во фрагментах сформулированы, также даны в контексте ГОСТ 5264-80: минимальные катеты угловых швов (приложение 1) [S4], уменьшение катета при электродах с более высоким временным сопротивлением разрыву (приложение 2) [S4], допуск выпуклости и вогнутости углового шва до 30 % катета [S4], увеличение размеров швов до 30 % в местах перекрытия и исправления дефектов [S4], увеличение предельных отклонений угла скоса кромок до +5° при подготовке ручным инструментом [S4]. Распространение их на трубопроводы из фрагментов не следует.\n\n4. Статус источника: ГОСТ 5264-80 во фрагментах указан как действующий [S1] (ограничение срока действия снято по протоколу № 5—94; издание с Изменением № 1 и Поправкой) [S1]; предупреждений об отмене или замене во фрагментах нет.\n\n5. Отмечаю дефекты распознавания во фрагментах: в [S1] присутствует посторонняя строка «прочность бетона»; в [S2] и [S6] часть строк дублируется («Св. 66 до 72 — 33 ±4» дважды [S2]; «Св. 3 до 15 — 0 +2» трижды [S6]). Использовать эти значения следует с осторожностью.\n\n**Вывод:** для ответа о конструктивных элементах сварных швов стальных трубопроводов необходимо обратиться к ГОСТ 16037-80, на который ссылается [S1], но его текст в предоставленных фрагментах отсутствует.",
+          "insufficient": true,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": null
+        },
+        "full_context": {
+          "answer": "Кратко: во приведённых фрагментах ответа нет. ГОСТ 5264-80, который устанавливает основные типы, конструктивные элементы и размеры сварных соединений, выполняемых ручной дуговой сваркой, прямо **не распространяется** на сварные соединения стальных трубопроводов — они нормируются отдельным стандартом ГОСТ 16037-80 [S59].\n\nЧто есть во фрагментах:\n\n- ГОСТ 5264-80 устанавливает основные типы, конструктивные элементы и размеры сварных соединений из сталей, а также сплавов на железоникелевой и никелевой основах, выполняемых ручной дуговой сваркой [S59].\n- Стандарт не распространяется на сварные соединения стальных трубопроводов по ГОСТ 16037-80 [S59].\n- Основные типы сварных соединений — по табл. 1; конструктивные элементы и их размеры — по табл. 2—54 [S59].\n\nОговорки:\n\n- Текст ГОСТ 16037-80 в предоставленных фрагментах отсутствует, поэтому конкретные конструктивные элементы (типы соединений, форма подготовки кромок, размеры швов) для стальных трубопроводов по имеющимся источникам привести нельзя. Обратитесь к самому ГОСТ 16037-80.\n- Фрагменты [S1]–[S17] (ГОСТ 10549-80, выход резьбы), [S31]–[S58] (ГОСТ 24705-2004, резьба метрическая) и [S18]–[S30] (ГОСТ 12.2.007.0-75, безопасность электротехнических изделий) к сварочным соединениям трубопроводов отношения не имеют.\n- Ссылочных данных о статусе ГОСТ 16037-80 (действующий/отменён) во фрагментах нет — никаких сведений о его статусе не привожу.",
+          "insufficient": true,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": null
+        }
+      },
+      {
+        "id": "oos-vibration-limits",
+        "rag": {
+          "answer": "Прямой ответ: конкретные числовые значения допустимых уровней вибрации на рабочих местах в приведённых фрагментах **не указаны**. Установлено лишь требование, что такие уровни должны соответствовать утверждённым санитарным нормам, а допустимые значения вибрационных характеристик изделий не должны превышать значений, указанных в ГОСТ 12.1.012-90 [S1].\n\nЧто именно говорится в источнике:\n\n- В конструкции электротехнических изделий должны быть предусмотрены средства шумо- и виброзащиты, обеспечивающие уровни шума и вибрации на рабочих местах в соответствии с утверждёнными санитарными нормами [S1].\n- Допустимые значения шумовых и вибрационных характеристик электротехнических изделий должны быть установлены в стандартах и технических условиях на изделия конкретных видов и не должны превышать значений, указанных в ГОСТ 12.1.003—83, ГОСТ 12.1.012-90 [S1].\n- Пункт приведён в редакции с изменениями (Изм. № 3, 4) [S1].\n\nОговорки:\n\n1. Фрагмент помечен как «распознано OCR, возможны ошибки» [S1] — обозначения стандартов и формулировки следует сверить с оригиналом текста.\n2. Нормативные документы, к которым отсылает пункт (ГОСТ 12.1.003—83, ГОСТ 12.1.012-90), в приведённых фрагментах не раскрыты: их содержание, статус (действие/замена) и конкретные значения уровней вибрации по ним не приводятся [S1]. По имеющимся фрагментам установить числовые допустимые уровни вибрации на рабочих местах невозможно.\n3. Для получения значений необходимо обратиться непосредственно к ГОСТ 12.1.012-90 (а по шуму — к ГОСТ 12.1.003—83), а также к стандартам и техническим условиям на конкретные виды изделий, как того требует п. 3.1.1 [S1].",
+          "insufficient": true,
+          "warnings": [
+            "Этих чисел нет в процитированных фрагментах: 1. Сверьте их с документом."
+          ],
+          "ungrounded_numbers": [
+            "1"
+          ],
+          "correct": null
+        },
+        "full_context": {
+          "answer": "Прямой ответ: конкретные числовые значения допустимых уровней вибрации на рабочих местах в приведённых фрагментах не содержатся. Установлено только требование, что уровни вибрации (и шума) на рабочих местах должны соответствовать утверждённым санитарным нормам, а допустимые значения вибрационных характеристик должны быть указаны в стандартах и технических условиях на изделия конкретных видов [S20].\n\nЧто именно есть во фрагментах:\n\n- В конструкции электротехнических изделий должны быть предусмотрены средства шумо- и виброзащиты, обеспечивающие уровни шума и вибрации на рабочих местах в соответствии с утверждёнными санитарными нормами; допустимые значения шумовых и вибрационных характеристик должны устанавливаться в стандартах и ТУ на изделия конкретных видов и не должны превышать значений, указанных в ГОСТ 12.1.003—83, ГОСТ 12.1.012-90 [S20] (ГОСТ 12.2.007.0-75, п. 3.1.1).\n- Нормируемые величины (классы, дБ, дБА, м/с², Гц и т. п.) ни в одном из фрагментов не приведены.\n\nОговорки:\n\n1. Приведённая ссылка на ГОСТ 12.1.012—90 сопровождена примечанием ФГУП «СТАНДАРТИНФОРМ»: «ГОСТ 12.1.012—90 заменен на ГОСТ 12.1.012-2004» [S30]. То есть ссылочный стандарт в тексте ГОСТ 12.2.007.0-75 указан в заменённой редакции — при пользовании следует руководствоваться заменённым стандартом.\n2. Текст обоих стандартов в предоставленных фрагментах помечен как распознанный OCR, возможны ошибки.\n3. Требования безопасности, не установленные ГОСТ 12.2.007.0-75, должны быть указаны в стандартах и технических условиях на конкретные виды изделий [S19][S20] — искать фактические цифры по вибрации нужно там либо в санитарных нормах и ГОСТ 12.1.012, которые во фрагментах не приведены.",
+          "insufficient": true,
+          "warnings": [
+            "Этих чисел нет в процитированных фрагментах: 1. Сверьте их с документом."
+          ],
+          "ungrounded_numbers": [
+            "1"
+          ],
+          "correct": null
+        }
+      },
+      {
+        "id": "oos-bend-radius",
+        "rag": {
+          "answer": "",
+          "insufficient": true,
+          "warnings": [],
+          "correct": false,
+          "ungrounded_numbers": []
+        },
+        "full_context": {
+          "answer": "В приведённых фрагментах ответа нет: ни один из них не устанавливает минимальный радиус гибки листовой стали (в том числе толщиной 3 мм). Сведений о гибке, галтовке, минимальных радиусах изгиба в предоставленных фрагментах не содержится.\n\nУточнения:\n- Фрагменты [S1]–[S17] — ГОСТ 10549-80 «Выход резьбы. Сбеги, недорезы, проточки и фаски»; регламентируют сбеги, недорезы, проточки и фаски для метрической, трубной и трапецеидальной резьбы [S1].\n- Фрагменты [S18]–[S30] — ГОСТ 12.2.007.0-75 «Изделия электротехнические. Общие требования безопасности» [S18].\n- Фрагменты [S31]–[S58] — ГОСТ 24705-2004 «Резьба метрическая. Основные размеры» [S32].\n- Фрагменты [S59]–[S91] — ГОСТ 5264-80 «Ручная дуговая сварка. Соединения сварные. Основные типы, конструктивные элементы и размеры»; стандарт распространяется на сварные соединения, а не на операции гибки, и задаёт, в частности, катеты угловых швов и предельные отклонения свариваемых кромок [S59][S89].\n\nПо вопросу о минимальном радиусе гибки следует обратиться к другим документам (например, стандартам на холодную листовую штамповку или к конструкторской документации на конкретное изделие) — во включённых фрагментах таких данных нет, и я не могу их привести.",
+          "insufficient": true,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": null
+        }
+      },
+      {
+        "id": "oos-roughness-marking",
+        "rag": {
+          "answer": "",
+          "insufficient": true,
+          "warnings": [],
+          "correct": false,
+          "ungrounded_numbers": []
+        },
+        "full_context": {
+          "answer": "Во приведённых фрагментах ответа нет: обозначение шероховатости поверхности (в том числе Ra) и правила его нанесения на чертежах ни в одном из них не рассматриваются.\n\nЧто содержат фрагменты, чтобы было понятно, почему ответа нет:\n- [S1]–[S17] — ГОСТ 10549-80 «Выход резьбы. Сбеги, недорезы, проточки и фаски»: размеры сбегов, недорезов, проточек и фасок для метрической, трубной цилиндрической, трубной конической, конической дюймовой и трапецеидальной резьбы.\n- [S18]–[S30] — ГОСТ 12.2.007.0-75 «Изделия электротехнические. Общие требования безопасности»: классы защиты, заземление, органы управления, оболочки, маркировка.\n- [S31]–[S58] — ГОСТ 24705-2004 «Резьба метрическая. Основные размеры»: диаметры и шаги резьбы.\n- [S59]–[S91] — ГОСТ 5264-80 «Ручная дуговая сварка. Соединения сварные»: типы соединений, конструктивные элементы и размеры.\n\nНи в одном фрагменте не приводится ни обозначение Ra, ни знак шероховатости, ни указание на нормативный документ по правилам нанесения шероховатости на чертежах. Все фрагменты по темам помечены как распознанные OCR с возможными ошибками, но это к существу вопроса отношения не имеет.\n\nДля получения ответа нужны фрагменты соответствующего стандарта на правила нанесения шероховатости на чертежах — в предоставленном наборе их нет.",
+          "insufficient": true,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": null
+        }
+      },
+      {
+        "id": "oos-unrelated-domain",
+        "rag": {
+          "answer": "",
+          "insufficient": true,
+          "warnings": [],
+          "correct": false,
+          "ungrounded_numbers": []
+        },
+        "full_context": {
+          "answer": "Во фрагментах нет ответа на этот вопрос.\n\nПриведённые фрагменты относятся к стандартам машиностроительной и электротехнической тематики: ГОСТ 10549-80 (выход резьбы), ГОСТ 24705-2004 (резьба метрическая, основные размеры), ГОСТ 5264-80 (ручная дуговая сварка, соединения сварные), ГОСТ 12.2.007.0-75 (изделия электротехнические, общие требования безопасности). Налоговое законодательство, Налоговый кодекс РФ и ставки налога на прибыль организаций в них не рассматриваются.\n\nРекомендую обратиться к Налоговому кодексу РФ (часть вторая) либо к профильному справочному источнику.",
+          "insufficient": true,
+          "warnings": [
+            "Ответ не подкреплён ни одной ссылкой на фрагменты документов."
+          ],
+          "ungrounded_numbers": [],
+          "correct": null
+        }
+      },
+      {
+        "id": "oos-named-pipeline-welds",
+        "rag": {
+          "answer": "",
+          "insufficient": true,
+          "warnings": [],
+          "correct": false,
+          "ungrounded_numbers": []
+        },
+        "full_context": {
+          "answer": "Прямой ответ: во приведённых фрагментах сведений о конструктивных элементах швов по ГОСТ 16037-80 нет — сам этот стандарт во фрагментах не представлен.\n\nЧто во фрагментах есть:\n- ГОСТ 16037-80 упоминается только один раз, в п. 1 ГОСТ 5264-80, и лишь как граница области применения: «Стандарт не распространяется на сварные соединения стальных трубопроводов по ГОСТ 16037-80» [S59].\n- Ни состав конструктивных элементов (типы соединений, форма подготовки кромок, катеты, зазоры b, ширина шва e и т. п.), ни таблицы размеров из ГОСТ 16037-80 во фрагментах не приводятся [S59].\n\nЧто можно сказать по аналогии (с оговоркой, что это относится к другому стандарту): в ГОСТ 5264-80 конструктивные элементы и их размеры установлены в табл. 2—54 [S59], а общие указания к ним — в пп. 4—16 (например, смещение кромок, увеличение размера b до 4 мм в монтажных условиях для соединений толщиной более 16 мм, выпуклость/вогнутость углового шва до 30 % катета) [S89][S90]. Переносить эти положения на трубопроводы по ГОСТ 16037-80 нельзя — ГОСТ 5264-80 на них прямо не распространяется [S59].\n\nЧтобы ответить по существу, нужны фрагменты самого ГОСТ 16037-80.",
+          "insufficient": true,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": null
+        }
+      },
+      {
+        "id": "oos-named-tolerances",
+        "rag": {
+          "answer": "",
+          "insufficient": true,
+          "warnings": [],
+          "correct": false,
+          "ungrounded_numbers": []
+        },
+        "full_context": {
+          "answer": "В приведённых фрагментах сведений о полях допусков резьбы по ГОСТ 16093-2004 нет. Ни один фрагмент не содержит текста самого ГОСТ 16093-2004.\n\nЧто во фрагментах всё же есть:\n\n- ГОСТ 16093-2004 упоминается только как ссылочный стандарт в ГОСТ 24705-2004: «ГОСТ 16093—2004 Основные нормы взаимозаменяемости. Резьба метрическая. Допуски. Посадки с зазором (ИСО 965-1:1998 «Резьба метрическая ИСО общего назначения — Допуски — Часть 1: Общие положения и основные данные» (NEQ), ИСО 965-3:1998 «Резьба метрическая ИСО общего назначения — Допуски — Часть 3: Предельные отклонения для конструкционных резьб» (NEQ))» [S32].\n- Указано также, что при расчётах прочности следует учитывать верхнее отклонение es среднего диаметра d2 по ГОСТ 16093 [S33].\n\nКонкретные обозначения полей допусков (например, 6H, 6g и т. п.), их числовые значения или таблицы в приведённых фрагментах отсутствуют. Состав полей допусков по ГОСТ 16093-2004 по этим фрагментам установить нельзя.\n\nДля ответа на вопрос нужны фрагменты непосредственно из ГОСТ 16093-2004.",
+          "insufficient": true,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": null
+        }
+      },
+      {
+        "id": "oos-named-old-edition",
+        "rag": {
+          "answer": "",
+          "insufficient": true,
+          "warnings": [],
+          "correct": false,
+          "ungrounded_numbers": []
+        },
+        "full_context": {
+          "answer": "Прямого ответа нет: во фрагментах отсутствует текст ГОСТ 5264-69. Приведённые фрагменты содержат только ГОСТ 5264-80, который введён «Взамен ГОСТ 5264-69» [S59], и норму о смещении кромок из этого действующего стандарта.\n\nЧто есть во фрагментах — п. 5 ГОСТ 5264-80 (действующий):\n«Допускается смещение свариваемых кромок перед сваркой относительно друг друга, не более:\n0,5 мм — для деталей толщиной до 4 мм;\n1.0 мм — для деталей толщиной 4—10 мм;\n0,1 s, но не более 3 мм — для деталей толщиной 10—100 мм;\n0,01 s + 2 мм, но не более 4 мм — для деталей толщиной более 100 мм.» [S89]\n\nОговорки:\n— Текст ГОСТ 5264-69 во фрагментах не приводится, поэтому сказать, что именно он устанавливал о смещении кромок, невозможно; сопоставить две редакции тоже нельзя.\n— Числа перенесены дословно из фрагмента [S89], который помечен как распознанный OCR («возможны ошибки»); в частности, «1.0 мм» в исходе записано с точкой.\n— ГОСТ 5264-80 в предоставленных фрагментах указан как действующий (статус «отменён»/«заменён» не заявлен) [S59].",
+          "insufficient": true,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": null
+        }
+      },
+      {
+        "id": "oos-named-earth-sign",
+        "rag": {
+          "answer": "",
+          "insufficient": true,
+          "warnings": [],
+          "correct": false,
+          "ungrounded_numbers": []
+        },
+        "full_context": {
+          "answer": "Прямой ответ: во приведённых фрагментах размеры знака заземления по ГОСТ 21130-75 отсутствуют. Ни один из фрагментов не является текстом ГОСТ 21130-75; он только упоминается как ссылочный документ.\n\nЧто во фрагментах есть по этому поводу:\n\n- Заземляющие зажимы должны соответствовать требованиям ГОСТ 21130-75 [S23].\n- «Размеры знака и способ его выполнения — по ГОСТ 21130-75, а для светильников — по ГОСТ 17677-82» [S23].\n- Там же указано требование: возле места присоединения заземляющего проводника должен быть помещён нанесённый любым способом нестираемый при эксплуатации знак заземления [S23].\n\nОговорки:\n\n- Конкретные числовые размеры (диаметр знака, толщина линий, габариты) во фрагментах не приводятся — их следует смотреть непосредственно в ГОСТ 21130-75.\n- В таблице ссылочных НТД ГОСТ 21130-75 не указан: в перечне ссылочных документов ГОСТ 12.2.007-75 во фрагментах приведены только ГОСТ 6211-69 и ГОСТ 27148-86 (это перечень из ГОСТ 10549-80) [S17]; в информационных данных ГОСТ 12.2.007.0-75 перечень ссылочных НТД во фрагментах не приведён [S18].\n- Обратите внимание: в примечании к разделу 3 ГОСТ 12.2.007.0-75 указано, что ГОСТ 12.1.012-90 заменён на ГОСТ 12.1.012-2004 [S30] — это касается другого пункта, но показывает, что текст стандарта переиздавался с изменениями и примечаниями.\n\nЕсли нужны именно размеры знака — требуется фрагмент текста ГОСТ 21130-75 (в представленной выборке его нет).",
+          "insufficient": true,
+          "warnings": [],
+          "ungrounded_numbers": [],
+          "correct": null
+        }
+      }
+    ]
+  }
+}

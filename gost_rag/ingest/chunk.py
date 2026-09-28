@@ -11,6 +11,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from typing import Protocol
 
 from gost_rag.models import Block, Chunk
@@ -65,10 +66,16 @@ def _is_separator_row(line: str) -> bool:
 
 
 def _split_table_block(block: Block, tokenizer: Tokenizer, max_tokens: int) -> list[Block]:
-    """Разрезать markdown-таблицу по строкам, повторяя заголовок в каждой части."""
+    """Разрезать markdown-таблицу по строкам, повторяя заголовок в каждой части.
+
+    Заголовок — всё до строки-разделителя включительно: подпись («Таблица 1
+    Размеры в мм») и шапка. Без подписи продолжение таблицы в соседнем чанке
+    теряет и номер таблицы, и единицы измерения.
+    """
     lines = block.text.split("\n")
-    has_header = len(lines) > 2 and _is_separator_row(lines[1])
-    header = lines[:2] if has_header else []
+    separator = next((i for i, line in enumerate(lines[:4]) if _is_separator_row(line)), None)
+    has_header = separator is not None and separator >= 1 and len(lines) > separator + 1
+    header = lines[: separator + 1] if has_header else []
     body = lines[len(header) :]
     header_text = "\n".join(header)
     header_cost = tokenizer.count(header_text) if header else 0
@@ -151,15 +158,22 @@ def chunk_blocks(
     current: list[Block] = []
     costs: list[int] = []
     current_cost = 0
+    # Сколько блоков в начале ``current`` перенесено перекрытием из предыдущего чанка.
+    carried = 0
 
     for block in prepared:
         cost = tokenizer.count(block.text)
         if current and current_cost + cost > chunk_tokens:
             chunks.append(
-                _build_chunk(current, doc_id, len(chunks), current_cost, ocr_pages, ocr_confidence)
+                _build_chunk(
+                    current, doc_id, len(chunks), current_cost, carried, ocr_pages, ocr_confidence
+                )
             )
-            carry = _overlap_tail(current, costs, overlap_tokens)
+            # Перекрытие не должно выталкивать чанк за бюджет: иначе хвост чанка
+            # уходит за окно энкодера и не попадает ни в вектор, ни к реранкеру.
+            carry = _overlap_tail(current, costs, min(overlap_tokens, chunk_tokens - cost))
             current = list(carry)
+            carried = len(carry)
             costs = [tokenizer.count(b.text) for b in carry]
             current_cost = sum(costs)
         current.append(block)
@@ -169,10 +183,14 @@ def chunk_blocks(
     if current:
         # Хвост короче минимума приклеиваем к предыдущему чанку, чтобы не плодить огрызки.
         if chunks and current_cost < min_chunk_tokens:
-            _append_tail(chunks[-1], current, current_cost)
+            # Перенесённые перекрытием блоки уже лежат в предыдущем чанке.
+            fresh = current[carried:]
+            _append_tail(chunks[-1], fresh, sum(costs[carried:]))
         else:
             chunks.append(
-                _build_chunk(current, doc_id, len(chunks), current_cost, ocr_pages, ocr_confidence)
+                _build_chunk(
+                    current, doc_id, len(chunks), current_cost, carried, ocr_pages, ocr_confidence
+                )
             )
 
     return chunks
@@ -185,6 +203,13 @@ def _append_tail(last: Chunk, blocks: list[Block], cost: int) -> None:
     last.text = f"{last.text}\n\n{tail_text}"
     last.token_count += cost
     last.page_end = max(last.page_end, max(b.page_no for b in blocks))
+    last.sections = _unique_sections([*last.sections, *(b.section for b in blocks)])
+    last.contains_table = last.contains_table or any(b.kind == "table" for b in blocks)
+
+
+def _unique_sections(sections: Iterable[str | None]) -> list[str]:
+    """Пункты в порядке появления, без повторов и пустых значений."""
+    return list(dict.fromkeys(s for s in sections if s))
 
 
 def _overlap_tail(blocks: list[Block], costs: list[int], overlap_tokens: int) -> list[Block]:
@@ -211,11 +236,17 @@ def _build_chunk(
     doc_id: str,
     index: int,
     token_count: int,
+    carried: int,
     ocr_pages: set[int],
     ocr_confidence: dict[int, float],
 ) -> Chunk:
     pages = [b.page_no for b in blocks]
-    sections = [b.section for b in blocks if b.section]
+    # Все пункты, чей текст реально лежит в чанке, — для цитаты диапазоном.
+    sections = _unique_sections(b.section for b in blocks)
+    # Основной пункт — первый из собственного содержимого чанка. Раньше брался
+    # первый вообще, то есть пункт хвоста перекрытия: чанк с пп. 3.3.13–3.4.7
+    # подписывался как «п. 3.3.12», и цитата ссылалась на чужой пункт.
+    own = _unique_sections(b.section for b in blocks[carried:])
     used_ocr = [p for p in pages if p in ocr_pages]
     confs = [ocr_confidence[p] for p in used_ocr if p in ocr_confidence]
     return Chunk(
@@ -225,7 +256,8 @@ def _build_chunk(
         page_start=min(pages),
         page_end=max(pages),
         token_count=token_count,
-        section=sections[0] if sections else None,
+        section=(own or sections or [None])[0],
+        sections=sections,
         contains_table=any(b.kind == "table" for b in blocks),
         from_ocr=bool(used_ocr),
         ocr_confidence=round(sum(confs) / len(confs), 2) if confs else None,

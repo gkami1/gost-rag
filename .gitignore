@@ -1,32 +1,45 @@
+# Virtual environment
+.venv/
+venv/
+env/
+
 # Python
 __pycache__/
 *.py[cod]
-.venv/
-venv/
+*$py.class
 *.egg-info/
+.eggs/
+build/
+dist/
 .pytest_cache/
+.mypy_cache/
 .ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
 
 # Secrets
 .env
+.env.local
+*.key
 
-# Данные: исходные документы и индекс не коммитим (см. README, раздел «Корпус»)
-data/raw/**
-!data/raw/.gitkeep
-data/interim/**
-!data/interim/.gitkeep
-data/processed/**
-!data/processed/.gitkeep
+# Data (documents not committed — heavy and often confidential)
+data/
+!data/.gitkeep
 
-# Кэш моделей
-.cache/
+# Models and indexes
 models/
+*.faiss
+*.index
+chroma_db/
 
-# Notebooks
-.ipynb_checkpoints/
-
-# IDE / OS
-.idea/
+# VS Code
 .vscode/
-.DS_Store
+!.vscode/extensions.json
+
+# Claude
+CLAUDE.md
+
+# OS
 Thumbs.db
+.DS_Store

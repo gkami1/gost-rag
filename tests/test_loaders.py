@@ -191,3 +191,49 @@ def test_docx_paragraphs_and_tables_keep_document_order(tmp_path):
     assert "после таблицы" in " ".join(b.text for b in blocks[table_at + 1 :])
     assert "| Толщина | Радиус |" in blocks[table_at].text
     assert blocks[0].section == "3.1"
+
+
+def test_table_belongs_to_clause_that_references_it():
+    """ГОСТ 24705-2004: табл. 1 вводит п. 4.1, а напечатана после п. 4.2."""
+    from gost_rag.ingest.loaders import assign_sections
+    from gost_rag.models import Block
+
+    blocks = [
+        Block(text="4.1 Номинальные значения диаметров приведены в таблице 1.", page_no=5),
+        Block(text="4.2 Значения вычисляют по формулам.", page_no=5),
+        Block(text="Таблица 1\n| d | P |\n| --- | --- |\n| 10 | 1,5 |", page_no=6, kind="table"),
+        Block(
+            text="Продолжение таблицы 1\n| d | P |\n| --- | --- |\n| 12 | 1,75 |",
+            page_no=7,
+            kind="table",
+        ),
+        Block(text="Таблица 2\n| a | b |\n| --- | --- |\n| 1 | 2 |", page_no=8, kind="table"),
+    ]
+    assign_sections(blocks)
+    assert [b.section for b in blocks] == ["4.1", "4.2", "4.1", "4.1", "4.2"]
+
+
+def test_text_only_vector_table_stays_a_table(tmp_path):
+    """Отбраковка «сеток без данных» — только для линовки со скана."""
+    doc = fitz.open()
+    page = doc.new_page(width=595, height=842)
+    page.insert_text((72, 100), "Obychnyy tekst stranitsy dlya obyoma " * 4, fontsize=10)
+    top, left, row_h, col_w = 200, 72, 26, 160
+    for r in range(3):
+        page.draw_line(
+            fitz.Point(left, top + r * row_h), fitz.Point(left + 2 * col_w, top + r * row_h)
+        )
+    for c in range(3):
+        page.draw_line(
+            fitz.Point(left + c * col_w, top), fitz.Point(left + c * col_w, top + 2 * row_h)
+        )
+    for r, row in enumerate([["Strana", "Organ"], ["Armeniya", "Armstandart"]]):
+        for c, value in enumerate(row):
+            page.insert_text((left + c * col_w + 6, top + r * row_h + 18), value, fontsize=10)
+    path = tmp_path / "text_table.pdf"
+    doc.save(str(path))
+    doc.close()
+
+    tables = [b for b in load_pdf(path)[0].blocks if b.kind == "table"]
+    assert len(tables) == 1
+    assert "| Armeniya | Armstandart |" in tables[0].text

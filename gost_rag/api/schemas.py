@@ -21,6 +21,7 @@ class Citation(BaseModel):
     status: str | None = None
     replaced_by: str | None = None
     section: str | None = None
+    sections: list[str] = []
     page_start: int | None = None
     page_end: int | None = None
     doc_id: str | None = None
@@ -34,6 +35,7 @@ class ChatResponse(BaseModel):
     answer: str
     citations: list[Citation] = []
     insufficient: bool = False
+    warnings: list[str] = []
     thread_id: str
 
 

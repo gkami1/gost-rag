@@ -80,7 +80,10 @@ class Chunk:
     page_start: int
     page_end: int
     token_count: int
+    #: Первый пункт собственного содержимого чанка (без хвоста перекрытия).
     section: str | None = None
+    #: Все пункты, чей текст попал в чанк, в порядке появления.
+    sections: list[str] = field(default_factory=list)
     contains_table: bool = False
     from_ocr: bool = False
     ocr_confidence: float | None = None
@@ -104,6 +107,7 @@ class Chunk:
                 "page_end": self.page_end,
                 "token_count": self.token_count,
                 "section": self.section,
+                "sections": self.sections,
                 "contains_table": self.contains_table,
                 "ocr": self.from_ocr,
                 "ocr_conf": self.ocr_confidence,
@@ -137,8 +141,8 @@ class RetrievedChunk:
         parts = [self.designation]
         if self.status and self.status != "неизвестно":
             parts[0] = f"{parts[0]} ({self.status})"
-        if section := self.payload.get("section"):
-            parts.append(f"п. {section}")
+        if clauses := self.clause_label():
+            parts.append(clauses)
         page_start = self.payload.get("page_start")
         page_end = self.payload.get("page_end")
         if page_start is not None:
@@ -147,3 +151,16 @@ class RetrievedChunk:
             else:
                 parts.append(f"стр. {page_start}")
         return ", ".join(parts)
+
+    def clause_label(self) -> str | None:
+        """«п. 3.2» или «пп. 3.3.13–3.4.7» — диапазоном, как и страницы.
+
+        Чанк в 800 токенов обычно охватывает несколько пунктов; назвать один из
+        них значило бы выдать правдоподобный, но неточный номер пункта.
+        """
+        sections = self.payload.get("sections") or []
+        if len(sections) > 1:
+            return f"пп. {sections[0]}–{sections[-1]}"
+        # Индекс, собранный до появления поля ``sections``, хранит только ``section``.
+        section = sections[0] if sections else self.payload.get("section")
+        return f"п. {section}" if section else None

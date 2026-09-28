@@ -142,7 +142,10 @@
         // Проверенный текст может отличаться от потокового: невалидные ссылки вырезаны.
         answerEl.textContent = data.answer;
         highlightUsed(data.citations || []);
-        statusEl.textContent = data.insufficient ? "Ответ не найден в корпусе" : "Готово";
+        const warned = (data.warnings || []).length > 0;
+        statusEl.textContent = data.insufficient
+          ? "Ответ не подтверждён документами корпуса"
+          : warned ? "Готово — проверьте предупреждения под ответом" : "Готово";
       } else if (name === "error") {
         statusEl.textContent = data.message;
       } else if (name === "done") {

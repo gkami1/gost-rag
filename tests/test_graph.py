@@ -10,11 +10,23 @@ from gost_rag.graph import nodes as nodes_module
 from gost_rag.graph.build import build_graph
 from gost_rag.graph.nodes import Retrieval, build_prompt_messages, guard
 from gost_rag.graph.prompts import NO_CONTEXT_MESSAGE, format_context
-from gost_rag.graph.state import build_citations, strip_invalid_citations, used_indices
+from gost_rag.graph.state import (
+    build_citations,
+    strip_invalid_citations,
+    ungrounded_numbers,
+    used_indices,
+)
 from gost_rag.models import RetrievedChunk
 
 
-def _chunk(marker: str, designation: str, status: str = "действующий", **payload) -> RetrievedChunk:
+def _chunk(
+    marker: str,
+    designation: str,
+    status: str = "действующий",
+    *,
+    text: str | None = None,
+    **payload,
+) -> RetrievedChunk:
     base = {
         "designation": designation,
         "status": status,
@@ -27,7 +39,10 @@ def _chunk(marker: str, designation: str, status: str = "действующий"
     }
     base.update(payload)
     return RetrievedChunk(
-        point_id=f"id-{marker}", text=f"текст {marker}", payload=base, rerank_score=0.9
+        point_id=f"id-{marker}",
+        text=text if text is not None else f"текст {marker}",
+        payload=base,
+        rerank_score=0.9,
     )
 
 
@@ -50,6 +65,25 @@ def test_citation_label_carries_status_clause_and_page():
 def test_page_range_rendered_when_chunk_spans_pages():
     label = _chunk("a", "ГОСТ 1-11", page_start=7, page_end=9).citation_label()
     assert "стр. 7–9" in label
+
+
+def test_clause_range_rendered_when_chunk_spans_clauses():
+    chunk = _chunk("a", "ГОСТ 1-11")
+    chunk.payload["sections"] = ["3.3.13", "3.4.1", "3.4.7"]
+    assert "пп. 3.3.13–3.4.7" in chunk.citation_label()
+
+
+def test_single_clause_in_sections_rendered_as_one():
+    chunk = _chunk("a", "ГОСТ 1-11")
+    chunk.payload["sections"] = ["3.2"]
+    assert "п. 3.2," in chunk.citation_label()
+
+
+def test_legacy_payload_without_sections_uses_section():
+    """Индекс, собранный до появления ``sections``, не должен терять номер пункта."""
+    chunk = _chunk("a", "ГОСТ 1-11")
+    chunk.payload.pop("sections", None)
+    assert "п. 3.2" in chunk.citation_label()
 
 
 def test_ocr_chunks_are_marked_in_context():
@@ -179,18 +213,23 @@ class FakeReranker:
 def patched_retrieval(monkeypatch):
     """Подменяем поиск: граф проверяется без Qdrant и без моделей."""
     found: list[RetrievedChunk] = []
+    searches: list[object] = []
 
-    monkeypatch.setattr(nodes_module, "hybrid_search", lambda *a, **k: list(found))
-    monkeypatch.setattr(nodes_module, "build_filter", lambda *a, **k: None)
-    monkeypatch.setattr(nodes_module, "known_designations", lambda *a, **k: set())
+    def fake_search(*args, **kwargs):
+        searches.append(kwargs.get("query_filter"))
+        return list(found)
+
+    monkeypatch.setattr(nodes_module, "hybrid_search", fake_search)
 
     class FakeEmbedder:
         def encode_one(self, text):
             return object()
 
-    def make(keep: list[RetrievedChunk]):
+    def make(keep: list[RetrievedChunk], corpus: set[str] | None = None):
         found.clear()
         found.extend(keep)
+        monkeypatch.setattr(nodes_module, "known_designations", lambda *a, **k: set(corpus or ()))
+        make.searches = searches
         return Retrieval(
             client=object(),
             embedder=FakeEmbedder(),
@@ -206,13 +245,14 @@ def _invoke(graph, question: str, thread: str = "t1"):
 
 
 def test_graph_answers_and_returns_citations(patched_retrieval):
-    chunks = [_chunk("a", "ГОСТ 14634-93")]
+    chunks = [_chunk("a", "ГОСТ 14634-93", text="Радиус гибки принимают равным 2S.")]
     llm = FakeLLM("Радиус гибки — 2S [S1].")
     graph = build_graph(patched_retrieval(chunks), llm, Settings(history_turns=0))
 
     result = _invoke(graph, "какой радиус гибки")
     assert result["answer"] == "Радиус гибки — 2S [S1]."
     assert result["insufficient"] is False
+    assert result["warnings"] == []
     assert [c["designation"] for c in result["citations"]] == ["ГОСТ 14634-93"]
 
 
@@ -228,7 +268,7 @@ def test_graph_refuses_without_sources_and_never_calls_llm(patched_retrieval):
 
 
 def test_graph_strips_hallucinated_citation_before_returning(patched_retrieval):
-    chunks = [_chunk("a", "ГОСТ 14634-93")]
+    chunks = [_chunk("a", "ГОСТ 14634-93", text="Радиус 6 мм, допуск ±0,2 мм.")]
     llm = FakeLLM("Радиус 6 мм [S1], а допуск ±0,2 [S7].")
     graph = build_graph(patched_retrieval(chunks), llm, Settings(history_turns=0))
 
@@ -236,6 +276,9 @@ def test_graph_strips_hallucinated_citation_before_returning(patched_retrieval):
     assert "[S7]" not in result["answer"]
     assert "[S1]" in result["answer"]
     assert len(result["citations"]) == 1
+    # Утверждение осталось без ссылки — пользователь должен об этом узнать.
+    assert any("S7" in w for w in result["warnings"])
+    assert "несуществующие фрагменты" in result["answer"]
 
 
 def test_thread_keeps_history_between_turns(patched_retrieval):
@@ -246,3 +289,120 @@ def test_thread_keeps_history_between_turns(patched_retrieval):
     _invoke(graph, "первый вопрос", thread="t-shared")
     result = _invoke(graph, "второй вопрос", thread="t-shared")
     assert len(result["messages"]) >= 2
+
+
+def test_graph_refuses_when_named_standard_is_not_in_corpus(patched_retrieval):
+    """«Что ГОСТ 16037-80 говорит о швах трубопроводов» не должен получать ответ
+    по ГОСТ 5264-80, найденный поиском по всему корпусу."""
+    chunks = [_chunk("a", "ГОСТ 5264-80", text="Конструктивные элементы швов 5 мм.")]
+    llm = FakeLLM("Ответ по чужому стандарту [S1].")
+    deps = patched_retrieval(chunks, corpus={"ГОСТ 5264-80"})
+    graph = build_graph(deps, llm, Settings(history_turns=0))
+
+    result = _invoke(graph, "какие швы по ГОСТ 16037-80 для трубопроводов?")
+    assert result["insufficient"] is True
+    assert "ГОСТ 16037-80 нет в базе" in result["answer"]
+    assert llm.calls == 0
+    assert patched_retrieval.searches == []
+
+
+def test_refusal_suggests_other_edition_of_same_standard(patched_retrieval):
+    llm = FakeLLM("не должно быть вызвано")
+    deps = patched_retrieval([], corpus={"ГОСТ 5264-80"})
+    graph = build_graph(deps, llm, Settings(history_turns=0))
+
+    result = _invoke(graph, "что изменилось в ГОСТ 5264-69?")
+    assert "есть другая редакция: ГОСТ 5264-80" in result["answer"]
+
+
+def test_named_standard_in_corpus_filters_search(patched_retrieval):
+    chunks = [_chunk("a", "ГОСТ 5264-80", text="Смещение кромок 0,5 мм.")]
+    llm = FakeLLM("Смещение — 0,5 мм [S1].")
+    deps = patched_retrieval(chunks, corpus={"ГОСТ 5264-80", "ГОСТ 10549-80"})
+    graph = build_graph(deps, llm, Settings(history_turns=0))
+
+    result = _invoke(graph, "смещение кромок по ГОСТу 5264")
+    assert result["insufficient"] is False
+    [query_filter] = patched_retrieval.searches
+    assert query_filter is not None
+
+
+def test_partly_missing_standards_answer_with_warning(patched_retrieval):
+    chunks = [_chunk("a", "ГОСТ 5264-80", text="Смещение кромок 0,5 мм.")]
+    llm = FakeLLM("Смещение — 0,5 мм [S1].")
+    deps = patched_retrieval(chunks, corpus={"ГОСТ 5264-80"})
+    graph = build_graph(deps, llm, Settings(history_turns=0))
+
+    result = _invoke(graph, "сравни ГОСТ 5264-80 и ГОСТ 16037-80 по смещению кромок")
+    assert result["insufficient"] is False
+    assert any("ГОСТ 16037-80 нет в базе" in w for w in result["warnings"])
+
+
+def test_number_absent_from_cited_source_is_flagged(patched_retrieval):
+    chunks = [_chunk("a", "ГОСТ 24705-2004", text="| 10 | 1,5 | 9,026 | 8,376 |")]
+    llm = FakeLLM("Средний диаметр М10×1,5 — 9,025 мм [S1].")
+    graph = build_graph(patched_retrieval(chunks), llm, Settings(history_turns=0))
+
+    result = _invoke(graph, "средний диаметр М10 с шагом 1,5")
+    assert result["warnings"]
+    assert "9,025" in result["warnings"][-1]
+    assert "9,025" in result["answer"]  # сам ответ не переписываем — предупреждаем
+
+
+def test_answer_without_any_citation_counts_as_insufficient(patched_retrieval):
+    chunks = [_chunk("a", "ГОСТ 1-11")]
+    llm = FakeLLM("Во фрагментах ответа нет.")
+    graph = build_graph(patched_retrieval(chunks), llm, Settings(history_turns=0))
+
+    result = _invoke(graph, "вопрос")
+    assert result["insufficient"] is True
+    assert result["citations"] == []
+
+
+# --------------------------------------------------------------------------- #
+# Проверка чисел
+# --------------------------------------------------------------------------- #
+
+
+def test_grounded_numbers_pass_regardless_of_decimal_separator():
+    chunks = [_chunk("a", "ГОСТ 1-11", text="допуск 0.5 мм при 40 °C")]
+    assert ungrounded_numbers("допуск 0,5 мм, температура 40 °C [S1]", chunks) == []
+
+
+def test_number_matching_is_whole_value_not_substring():
+    chunks = [_chunk("a", "ГОСТ 1-11", text="средний диаметр 9,026")]
+    assert ungrounded_numbers("9,02 [S1]", chunks) == ["9,02"]
+
+
+def test_numbers_from_question_and_label_are_allowed():
+    chunks = [_chunk("a", "ГОСТ 24705-2004", text="значение 9,026")]
+    answer = "Для М10 с шагом 1,5 по ГОСТ 24705-2004 (стр. 7) — 9,026 мм [S1]."
+    assert ungrounded_numbers(answer, chunks, question="М10 с шагом 1,5") == []
+
+
+def test_numbers_inside_standard_designations_are_not_checked():
+    chunks = [_chunk("a", "ГОСТ 12.2.007.0-75", text="болт М 10 для тока до 630 А")]
+    answer = "Болт М10 [S1]; размеры знака — по ГОСТ 21130-75, резьба — по ГОСТ 24705."
+    assert ungrounded_numbers(answer, chunks) == []
+
+
+@pytest.mark.parametrize(
+    "answer",
+    [
+        "Во приведённых фрагментах ответа нет [S1]. ГОСТ 5264-80 трубопроводы исключает.",
+        "**Краткий ответ:** конструктивные элементы швов во фрагментах отсутствуют [S1].",
+        "Конкретные значения в приведённых фрагментах не указаны [S1].",
+    ],
+)
+def test_polite_refusal_with_citation_is_insufficient(patched_retrieval, answer):
+    """Отказ «во фрагментах ответа нет» со ссылкой на фрагмент — всё равно отказ."""
+    chunks = [_chunk("a", "ГОСТ 5264-80", text="Стандарт не распространяется на трубопроводы.")]
+    graph = build_graph(patched_retrieval(chunks), FakeLLM(answer), Settings(history_turns=0))
+    assert _invoke(graph, "швы трубопроводов")["insufficient"] is True
+
+
+def test_answer_mentioning_limits_is_not_mistaken_for_refusal(patched_retrieval):
+    chunks = [_chunk("a", "ГОСТ 10549-80", text="сбег не более 2,8 мм")]
+    llm = FakeLLM("Сбег — не более 2,8 мм [S1].\n\nДругих ограничений во фрагментах нет.")
+    graph = build_graph(patched_retrieval(chunks), llm, Settings(history_turns=0))
+    assert _invoke(graph, "сбег")["insufficient"] is False

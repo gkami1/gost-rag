@@ -63,6 +63,13 @@ class Settings(BaseSettings):
     embedding_device: str | None = None  # None -> авто (cuda, если доступна)
     use_fp16: bool = True
     embed_batch_size: int = 4
+    #: Окна энкодера и реранкера в токенах. У FlagEmbedding оба по умолчанию 512,
+    #: а чанк — 800: хвост почти каждого чанка молча отрезался и не попадал ни в
+    #: вектор, ни к кросс-энкодеру (23 % токенов корпуса). Держать с запасом над
+    #: ``chunk_tokens`` — хвост короче ``min_chunk_tokens`` приклеивается сверху.
+    embed_max_length: int = 1024
+    #: Пара «вопрос + чанк» целиком; bge-reranker-v2-m3 обучен на 1024.
+    rerank_max_length: int = 1024
 
     # ---------- Чанкинг ----------
     chunk_tokens: int = 800
@@ -82,7 +89,12 @@ class Settings(BaseSettings):
     prefetch_limit: int = 50
     fusion_limit: int = 30
     rerank_top_n: int = 6
-    rerank_threshold: float = 0.0
+    #: Порог отсечения после кросс-энкодера. Ноль здесь равносилен выключенному
+    #: решению №6: score() вызывается с normalize=True, то есть выдаёт сигмоиду
+    #: строго больше нуля, и при 0.0 не отсекается вообще ничего — guard никогда
+    #: не уходит в refuse. Значение подобрано на eval/questions.yaml: 0.2 отсекает
+    #: 5 из 6 вопросов вне корпуса ценой 3 из 22 вопросов внутри корпуса.
+    rerank_threshold: float = 0.2
     history_turns: int = 4
 
     # ---------- Ingestion ----------

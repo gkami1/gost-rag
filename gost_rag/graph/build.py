@@ -1,7 +1,7 @@
 """Сборка графа LangGraph.
 
-    normalize -> retrieve -> rerank -> guard -+-> generate -> verify_citations -> END
-                                              +-> refuse -> END
+    retrieve -> rerank -> guard -+-> generate -> verify_citations -> END
+                                 +-> refuse -> END
 
 Узлы разделены намеренно: чтобы позже добавить multi-query или переписывание
 вопроса, достаточно вставить узел перед retrieve, не трогая остальное.

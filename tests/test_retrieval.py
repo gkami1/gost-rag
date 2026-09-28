@@ -22,8 +22,14 @@ from gost_rag.ingest.index import (
     list_documents,
     upsert_points,
 )
-from gost_rag.models import Chunk, DocumentMeta
-from gost_rag.retrieval.filters import build_filter, extract_designations, known_designations
+from gost_rag.models import Chunk, DocumentMeta, RetrievedChunk
+from gost_rag.retrieval.filters import (
+    build_filter,
+    extract_designations,
+    known_designations,
+    resolve_designations,
+)
+from gost_rag.retrieval.rerank import Reranker
 from gost_rag.retrieval.store import hybrid_search
 
 DIM = 4
@@ -201,6 +207,11 @@ def test_search_on_missing_collection_returns_empty(settings, tmp_path):
         ("по ГОСТ 14634-93", ["ГОСТ 14634-93"]),
         ("см. ГОСТ Р 1.2 и ГОСТ 1050", ["ГОСТ Р 1.2", "ГОСТ 1050"]),
         ("какой радиус гибки листовой стали", []),
+        # Падежные формы — самый частый вид обозначения в живом вопросе.
+        ("смещение кромок по ГОСТу 5264", ["ГОСТ 5264"]),
+        ("требования ГОСТа 12.2.007.0-75", ["ГОСТ 12.2.007.0-75"]),
+        ("по ГОСТ Р ИСО 9001-2015", ["ГОСТ Р ИСО 9001-2015"]),
+        ("по ГОСТ Р ISO 9001", ["ГОСТ Р ИСО 9001"]),
     ],
 )
 def test_extract_designations(query, expected):
@@ -236,3 +247,91 @@ def test_no_filter_without_designation(client, settings):
 def test_known_designations_lists_corpus(client, settings):
     _seed(client, settings)
     assert known_designations(client, settings) == {"ГОСТ 14634-93", "ГОСТ 1050-88"}
+
+
+# --------------------------------------------------------------------------- #
+# Порог отсечения кросс-энкодера (решение №6)
+# --------------------------------------------------------------------------- #
+
+
+class _StubRerankerModel:
+    """Подставной кросс-энкодер: возвращает заранее заданные скоры."""
+
+    def __init__(self, scores: list[float]) -> None:
+        self._scores = scores
+
+    def compute_score(self, pairs, normalize=True):
+        assert len(pairs) == len(self._scores)
+        return list(self._scores)
+
+
+def _retrieved(marker: str) -> RetrievedChunk:
+    return RetrievedChunk(point_id=f"id-{marker}", text=f"текст {marker}", payload={})
+
+
+def _stub_reranker(scores: list[float], settings: Settings) -> Reranker:
+    reranker = Reranker(settings)
+    reranker._model = _StubRerankerModel(scores)
+    return reranker
+
+
+def test_default_rerank_threshold_is_positive():
+    """Порог 0.0 бесшумно выключает отказ, а вместе с ним — решение №6.
+
+    score() вызывается с normalize=True, то есть выдаёт сигмоиду строго больше
+    нуля. При пороге 0.0 условие `score >= threshold` истинно всегда, выдача
+    никогда не пустеет, guard никогда не уходит в refuse, и LLM получает
+    произвольный мусор даже на вопросе, которого в корпусе нет.
+    """
+    assert Settings().rerank_threshold > 0.0
+
+
+def test_rerank_drops_everything_when_all_scores_are_weak():
+    # Так выглядит вопрос вне корпуса: кандидаты есть, но ни один не релевантен.
+    reranker = _stub_reranker([0.01, 0.004, 0.002], Settings(rerank_threshold=0.2))
+    kept = reranker.rerank("вопрос не по корпусу", [_retrieved(m) for m in "abc"])
+    assert kept == []
+
+
+def test_rerank_keeps_only_candidates_above_threshold():
+    reranker = _stub_reranker([0.95, 0.05, 0.30], Settings(rerank_threshold=0.2))
+    kept = reranker.rerank("вопрос", [_retrieved(m) for m in "abc"])
+    assert [c.point_id for c in kept] == ["id-a", "id-c"]
+    assert all(c.rerank_score is not None for c in kept)
+
+
+_CORPUS = {"ГОСТ 5264-80", "ГОСТ 24705-2004"}
+
+
+def test_resolve_reports_standard_missing_from_corpus():
+    match = resolve_designations("швы трубопроводов по ГОСТ 16037-80", _CORPUS)
+    assert match.missing == ["ГОСТ 16037-80"]
+    assert match.only_missing
+    assert match.filter is None
+
+
+def test_resolve_offers_other_edition_of_missing_standard():
+    match = resolve_designations("что в ГОСТ 5264-69", _CORPUS)
+    assert match.missing == ["ГОСТ 5264-69"]
+    assert match.alternatives == {"ГОСТ 5264-69": ["ГОСТ 5264-80"]}
+
+
+def test_resolve_without_year_matches_edition_in_corpus():
+    match = resolve_designations("по ГОСТу 5264", _CORPUS)
+    assert match.matched == ["ГОСТ 5264-80"]
+    assert match.missing == []
+    assert match.filter is not None
+
+
+def test_resolve_mixed_keeps_filter_and_reports_missing():
+    match = resolve_designations("сравни ГОСТ 5264-80 и ГОСТ 16037-80", _CORPUS)
+    assert match.matched == ["ГОСТ 5264-80"]
+    assert match.missing == ["ГОСТ 16037-80"]
+    assert not match.only_missing
+
+
+def test_resolve_question_without_designation_is_unconstrained():
+    match = resolve_designations("какой радиус гибки", _CORPUS)
+    assert match.mentioned == []
+    assert not match.only_missing
+    assert match.filter is None

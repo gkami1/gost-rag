@@ -13,6 +13,8 @@ from __future__ import annotations
 
 import json
 import uuid
+from collections.abc import Iterator
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
@@ -46,6 +48,30 @@ def _runtime():
     from gost_rag.graph.build import get_runtime
 
     return get_runtime()
+
+
+@contextmanager
+def _index_client() -> Iterator:
+    """Клиент Qdrant для служебных эндпоинтов.
+
+    Встроенный Qdrant держит эксклюзивный лок на каталоге — даже внутри одного
+    процесса. После первого вопроса в чат клиент уже открыт графом, и второй
+    ``QdrantClient(path=...)`` падал: /healthz, /api/documents и /api/source (а с
+    ним — ссылка на исходник для проверки цитаты) переставали работать. Поэтому
+    берём клиент графа, если он есть, и открываем свой только до его появления.
+    """
+    from gost_rag.graph.build import get_runtime
+    from gost_rag.ingest.index import get_client
+
+    if get_runtime.cache_info().currsize:
+        deps, _graph = get_runtime()
+        yield deps.client
+        return
+    client = get_client(get_settings())
+    try:
+        yield client
+    finally:
+        client.close()
 
 
 def _sse(event: str, data: dict[str, Any]) -> dict[str, str]:
@@ -112,6 +138,7 @@ async def chat(payload: ChatRequest, request: Request):
                             "answer": output.get("answer", ""),
                             "citations": output.get("citations", []),
                             "insufficient": bool(output.get("insufficient")),
+                            "warnings": output.get("warnings", []),
                         },
                     )
         except Exception as exc:
@@ -133,6 +160,7 @@ def _source_dict(chunk, index: int) -> dict[str, Any]:
         "status": chunk.status,
         "replaced_by": payload.get("replaced_by"),
         "section": payload.get("section"),
+        "sections": payload.get("sections") or [],
         "page_start": payload.get("page_start"),
         "page_end": payload.get("page_end"),
         "doc_id": payload.get("doc_id"),
@@ -150,27 +178,17 @@ def _source_dict(chunk, index: int) -> dict[str, Any]:
 
 @app.get("/api/documents", response_model=list[DocumentSummary])
 def documents():
-    from gost_rag.ingest.index import get_client
-
     settings = get_settings()
-    client = get_client(settings)
-    try:
+    with _index_client() as client:
         return [DocumentSummary(**doc) for doc in list_documents(client, settings)]
-    finally:
-        client.close()
 
 
 @app.get("/api/source/{doc_id}")
 def source(doc_id: str, page: int = 1):
     """Отдать исходный PDF, чтобы цитату можно было проверить глазами."""
-    from gost_rag.ingest.index import get_client
-
     settings = get_settings()
-    client = get_client(settings)
-    try:
+    with _index_client() as client:
         match = next((d for d in list_documents(client, settings) if d["doc_id"] == doc_id), None)
-    finally:
-        client.close()
 
     if not match or not match.get("source_path"):
         raise HTTPException(status_code=404, detail="Документ не найден")
@@ -194,18 +212,15 @@ def source(doc_id: str, page: int = 1):
 
 @app.get("/healthz", response_model=HealthResponse)
 def healthz():
-    from gost_rag.ingest.index import get_client
     from gost_rag.ingest.ocr import configure_tesseract, ocr_available
 
     settings = get_settings()
-    client = get_client(settings)
     try:
-        chunks = count_points(client, settings)
+        with _index_client() as client:
+            chunks = count_points(client, settings)
     except Exception as exc:
         chunks = 0
         log.warning("healthz_index_error", error=str(exc))
-    finally:
-        client.close()
 
     configure_tesseract(settings.tesseract_cmd)
     return HealthResponse(

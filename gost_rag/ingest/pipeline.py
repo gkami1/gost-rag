@@ -1,7 +1,7 @@
 """Конвейер индексации: файл -> страницы -> блоки -> чанки -> Qdrant.
 
-Запуск повторно безопасен: ID точки выводится из хэша текста, поэтому неизменный
-документ переиндексируется в no-op. Журнал в ``data/interim/ingest_ledger.jsonl``
+Запуск повторно безопасен: ID точки выводится из хэша текста, поэтому повторная
+запись того же чанка ничего не дублирует. Журнал в ``data/interim/ingest_ledger.jsonl``
 позволяет продолжить прерванный прогон, не перечитывая уже разобранные файлы.
 """
 
@@ -26,8 +26,15 @@ from gost_rag.ingest.index import (
     get_client,
     upsert_points,
 )
-from gost_rag.ingest.loaders import SUPPORTED_SUFFIXES, blocks_from_text, file_sha256, load_document
+from gost_rag.ingest.loaders import (
+    SUPPORTED_SUFFIXES,
+    assign_sections,
+    blocks_from_text,
+    file_sha256,
+    load_document,
+)
 from gost_rag.ingest.metadata import build_metadata, load_registry
+from gost_rag.ingest.normalize import clean_page_text
 from gost_rag.logging import configure_logging, get_logger
 from gost_rag.models import Block, Chunk, DocumentMeta, PageDoc
 
@@ -122,10 +129,13 @@ def apply_ocr(path: Path, pages: list[PageDoc], settings: Settings) -> int:
         result = ocr_module.ocr_page(
             path, page.page_no, lang=settings.ocr_lang, dpi=settings.ocr_dpi
         )
-        if not result.text.strip():
+        # Та же чистка, что у текстового слоя: без неё переносы «поверх-ность» и
+        # разрядка «Т А Б Л И Ц А» доходили до индекса только со сканов.
+        text = clean_page_text(result.text)
+        if not text:
             continue
-        blocks, section = blocks_from_text(result.text, page.page_no, section)
-        page.text = result.text
+        blocks, section = blocks_from_text(text, page.page_no, section)
+        page.text = text
         page.blocks = blocks
         page.from_ocr = True
         page.ocr_confidence = result.confidence
@@ -141,7 +151,14 @@ def apply_ocr(path: Path, pages: list[PageDoc], settings: Settings) -> int:
 
 
 def collect_blocks(pages: list[PageDoc]) -> list[Block]:
-    return [block for page in pages for block in page.blocks]
+    """Блоки документа в порядке страниц с пунктами, размеченными по всему документу.
+
+    Разметка делается здесь, после OCR, а не в загрузчике: только теперь блоки
+    текстового слоя и сканов стоят в одном ряду, и нумерация у них общая.
+    """
+    blocks = [block for page in pages for block in page.blocks]
+    assign_sections(blocks)
+    return blocks
 
 
 def chunk_document(
@@ -193,11 +210,14 @@ def ingest_file(
             error="не удалось извлечь текст (нужен OCR?)",
         )
 
+    # Сначала эмбеддинги — самый долгий и самый хрупкий шаг (память, Ctrl+C).
+    # Если он упадёт после удаления, документ исчезнет из индекса до следующего
+    # прогона; до удаления — останется старая версия.
+    embeddings = embedder.encode([c.text for c in chunks])
+
     # Документ мог измениться: старые чанки с другим текстом остались бы мусором,
     # потому что их ID зависит от содержимого и перезаписью они не затрутся.
     delete_document(client, meta.doc_id, settings)
-
-    embeddings = embedder.encode([c.text for c in chunks])
     indexed = upsert_points(client, build_points(chunks, embeddings, meta, settings), settings)
 
     return IngestReport(

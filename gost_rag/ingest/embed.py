@@ -70,6 +70,7 @@ class BGEM3Embedder:
                 # fp16 на CPU даёт только замедление.
                 use_fp16=self._settings.use_fp16 and self._device != "cpu",
                 devices=self._device,
+                passage_max_length=self._settings.embed_max_length,
             )
         return self._model
 

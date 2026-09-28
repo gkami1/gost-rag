@@ -33,6 +33,7 @@ class Reranker:
                 self._settings.reranker_model,
                 use_fp16=self._settings.use_fp16 and self._device != "cpu",
                 devices=self._device,
+                max_length=self._settings.rerank_max_length,
             )
         return self._model
 

@@ -34,7 +34,13 @@ def configure_tesseract(cmd: str | None) -> None:
 
 
 def ocr_available(lang: str = "rus") -> bool:
-    """Проверить, что бинарник есть и нужный язык установлен."""
+    """Проверить, что бинарник есть и нужные языки установлены.
+
+    Tesseract допускает комбинацию языков через ``+`` (``rus+eng``) — это штатный
+    приём для ГОСТов, где в русский текст вкраплены латинские обозначения (Ra, S,
+    M10). Сравнивать такую строку со списком языков целиком нельзя: проверка
+    провалится, ingestion сочтёт OCR недоступным и молча выбросит все сканы.
+    """
     try:
         import pytesseract
 
@@ -42,8 +48,16 @@ def ocr_available(lang: str = "rus") -> bool:
     except Exception as exc:
         log.warning("tesseract_unavailable", error=str(exc))
         return False
-    if lang not in langs:
-        log.warning("tesseract_lang_missing", lang=lang, available=sorted(langs)[:10])
+
+    requested = [part for part in lang.split("+") if part]
+    missing = [part for part in requested if part not in langs]
+    if not requested or missing:
+        log.warning(
+            "tesseract_lang_missing",
+            lang=lang,
+            missing=missing or [lang],
+            available=sorted(langs)[:10],
+        )
         return False
     return True
 

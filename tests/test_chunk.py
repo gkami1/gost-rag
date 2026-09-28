@@ -88,6 +88,58 @@ def test_section_is_carried_from_first_block(tok):
     assert chunks[0].section == "3.2"
 
 
+def _clause(section: str, n_words: int = 20) -> Block:
+    return Block(
+        text=" ".join(f"п{section}_{i}" for i in range(n_words)), page_no=1, section=section
+    )
+
+
+def test_section_ignores_overlap_tail(tok):
+    """Регрессия: чанк подписывался пунктом из хвоста перекрытия.
+
+    Хвост предыдущего чанка (п. 3.2) стоит в начале следующего, но собственное
+    содержимое следующего чанка — пп. 3.3 и 3.4. Подпись «п. 3.2» указала бы
+    инженеру не туда.
+    """
+    blocks = [_clause("3.1", 60), _clause("3.2", 20), _clause("3.3", 40), _clause("3.4", 30)]
+    chunks = chunk_blocks(
+        blocks, "doc", tok, chunk_tokens=100, overlap_tokens=25, min_chunk_tokens=1
+    )
+    assert len(chunks) == 2
+    second = chunks[1]
+    assert second.text.startswith("п3.2_0")  # перекрытие действительно есть
+    assert second.section == "3.3"
+    assert second.sections == ["3.2", "3.3", "3.4"]
+
+
+def test_sections_list_every_clause_in_order_without_repeats(tok):
+    blocks = [
+        _clause("3.1", 10),
+        Block(text="продолжение", page_no=1, section="3.1"),
+        _clause("3.2"),
+    ]
+    chunks = chunk_blocks(blocks, "doc", tok, chunk_tokens=100, overlap_tokens=10)
+    assert chunks[0].sections == ["3.1", "3.2"]
+    assert chunks[0].section == "3.1"
+
+
+def test_short_tail_clauses_are_added_to_previous_chunk(tok):
+    blocks = [_clause("3.1", 60), _clause("3.2", 38), _clause("3.3", 5)]
+    chunks = chunk_blocks(
+        blocks, "doc", tok, chunk_tokens=100, overlap_tokens=0, min_chunk_tokens=10
+    )
+    assert len(chunks) == 1
+    assert chunks[0].sections == ["3.1", "3.2", "3.3"]
+
+
+def test_sections_reach_payload(tok):
+    from gost_rag.models import DocumentMeta
+
+    chunk = chunk_blocks([_clause("3.1"), _clause("3.2")], "doc", tok, chunk_tokens=100)[0]
+    meta = DocumentMeta("doc", "ГОСТ 1-11", None, None, "действующий", None, "x.pdf")
+    assert chunk.as_payload(meta)["sections"] == ["3.1", "3.2"]
+
+
 # ---------- таблицы ----------
 
 TABLE = "\n".join(
