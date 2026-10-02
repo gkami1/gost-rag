@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 import json
+import shutil
+import subprocess
 from collections.abc import Iterator
+from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
@@ -192,3 +195,65 @@ def test_graph_failure_is_reported_as_error_event(client, monkeypatch):
     events = dict(_parse_sse(client.post("/api/chat", json={"question": "q"}).text))
     assert "провайдер недоступен" in events["error"]["message"]
     assert "done" in events
+
+
+# --------------------------------------------------------------------------- #
+# Разбор потока в браузере
+# --------------------------------------------------------------------------- #
+
+NODE = shutil.which("node")
+SSE_JS = Path(api_main.__file__).parent / "static" / "sse.js"
+
+_NODE_DRIVER = """
+const { takeEvents } = require(process.argv[1]);
+const pieces = JSON.parse(require("fs").readFileSync(0, "utf8"));
+let buffer = "";
+const names = [];
+for (const piece of pieces) {
+  const { events, rest } = takeEvents(buffer + piece);
+  buffer = rest;
+  for (const e of events) names.push([e.name, e.data]);
+}
+process.stdout.write(JSON.stringify(names));
+"""
+
+
+def _browser_parse(text: str, piece: int) -> list[tuple[str, dict]]:
+    """Прогнать поток через static/sse.js, нарезав его кусками по ``piece`` символов."""
+    pieces = [text[i : i + piece] for i in range(0, len(text), piece)]
+    out = subprocess.run(
+        [NODE, "-e", _NODE_DRIVER, str(SSE_JS)],
+        input=json.dumps(pieces),
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=True,
+    )
+    return [tuple(e) for e in json.loads(out.stdout)]
+
+
+@pytest.mark.skipif(NODE is None, reason="node не установлен")
+@pytest.mark.parametrize("piece", [1, 7, 100_000])
+def test_browser_parser_sees_final_event_of_refusal(client, monkeypatch, piece):
+    """Страница искала «\n\n», а sse-starlette шлёт «\r\n\r\n»: ни одно событие не
+    разбиралось, и интерфейс навсегда оставался на «Ищу в документах…». Разбираем
+    настоящий ответ сервера тем же кодом, что и браузер; кусок в 1 символ рвёт
+    «\r\n» посередине."""
+    refusal = [
+        {"event": "on_chain_end", "name": "rerank", "data": {"output": {"reranked": []}}},
+        {
+            "event": "on_chain_end",
+            "name": "refuse",
+            "data": {"output": {"answer": "Не нашлось.\n\nСейчас в базе:", "insufficient": True}},
+        },
+    ]
+    monkeypatch.setattr(api_main, "_runtime", lambda: (object(), FakeGraph(refusal)))
+    raw = client.post("/api/chat", json={"question": "q"}).text
+    assert "\r\n" in raw  # предпосылка теста: сервер действительно шлёт CRLF
+
+    events = _browser_parse(raw, piece)
+    names = [name for name, _ in events]
+    assert names == ["start", "sources", "final", "done"]
+    final = dict(events)["final"]
+    assert final["insufficient"] is True
+    assert final["answer"] == "Не нашлось.\n\nСейчас в базе:"

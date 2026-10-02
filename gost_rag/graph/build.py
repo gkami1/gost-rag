@@ -19,9 +19,9 @@ from gost_rag.graph.nodes import (
     Retrieval,
     guard,
     make_generate_node,
+    make_refuse_node,
     make_rerank_node,
     make_retrieve_node,
-    refuse,
     verify_citations,
 )
 from gost_rag.graph.state import GraphState
@@ -35,7 +35,7 @@ def build_graph(deps: Retrieval, llm, settings: Settings | None = None, *, check
     graph.add_node("rerank", make_rerank_node(deps))
     graph.add_node("generate", make_generate_node(llm, settings))
     graph.add_node("verify_citations", verify_citations)
-    graph.add_node("refuse", refuse)
+    graph.add_node("refuse", make_refuse_node(deps))
 
     graph.set_entry_point("retrieve")
     graph.add_edge("retrieve", "rerank")

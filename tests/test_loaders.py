@@ -237,3 +237,132 @@ def test_text_only_vector_table_stays_a_table(tmp_path):
     tables = [b for b in load_pdf(path)[0].blocks if b.kind == "table"]
     assert len(tables) == 1
     assert "| Armeniya | Armstandart |" in tables[0].text
+
+
+def _tbl(caption: str, page: int):
+    from gost_rag.models import Block
+
+    body = "| f | R |\n| --- | --- |\n| 4,0 | 1,0 |"
+    return Block(text=f"{caption}\n{body}", page_no=page, kind="table")
+
+
+def test_numbered_table_notes_are_not_clauses():
+    """ГОСТ 10549-80: примечания 3 и 4 под табл. 1 забирали номер у настоящего
+    п. 3, и табл. 2 про внутреннюю резьбу подписывалась «п. 4»."""
+    from gost_rag.ingest.loaders import assign_sections
+    from gost_rag.models import Block
+
+    blocks = [
+        Block(text="2. Размеры для наружной резьбы — в табл. 1.", page_no=2),
+        _tbl("Таблица 1", 2),
+        Block(text="Примечания:", page_no=3),
+        Block(text="1. Проточки типа 2 снижают концентрацию напряжений.", page_no=3),
+        Block(text="2. Размеры проточек допускается устанавливать по шагу.", page_no=3),
+        Block(text="3. Для деталей из высокопрочных материалов допускается иное.", page_no=3),
+        Block(text="4. Допускается применять размеры по ГОСТ 27148.", page_no=3),
+        Block(text="3. Размеры для внутренней метрической резьбы — в табл. 2.", page_no=3),
+        _tbl("Т а б л и и а 2", 3),
+        Block(text="* Ширина дана для диаметров 6 мм.\nП р и м с ч а н и я:", page_no=4),
+        Block(text="1. Проточки типа 2 снижают концентрацию напряжений.", page_no=4),
+        Block(text="4. Размеры для трубной цилиндрической резьбы — в габл. 3. 4.", page_no=4),
+    ]
+    assign_sections(blocks)
+    assert [b.section for b in blocks] == [
+        "2",
+        "2",
+        "2",
+        "2",
+        "2",
+        "2",
+        "2",
+        "3",
+        "3",
+        "3",
+        "3",
+        "4",
+    ]
+
+
+def test_table_number_recovered_from_ocr_caption_and_order():
+    """«Таблица I», «Таблииа4», «Таблицаб», «Таблица?» — номера 1, 4, 6, 7."""
+    from gost_rag.ingest.loaders import assign_sections
+
+    blocks = [
+        _tbl("Таблица I Размеры в миллиметрах", 1),
+        _tbl("Продолжение табл. 1", 2),
+        _tbl("Таблица 2", 3),
+        _tbl("Т а б л и и а 3", 4),
+        _tbl("Таблииа4 Размеры в миллиметрах", 5),
+        _tbl("Таблица 5", 6),
+        _tbl("Таблицаб Размеры в миллиметрах", 7),
+        _tbl("Таблица? В миллиметрах", 8),
+        _tbl("Окончание таблицы 7 В миллиметрах", 9),
+        _tbl("Т абли ца)", 10),
+    ]
+    assign_sections(blocks)
+    assert [b.text.split("\n", 1)[0] for b in blocks] == [
+        "Таблица 1 Размеры в миллиметрах",
+        "Продолжение табл. 1",
+        "Таблица 2",
+        "Таблица 3",
+        "Таблица 4 Размеры в миллиметрах",
+        "Таблица 5",
+        "Таблица 6 Размеры в миллиметрах",
+        "Таблица 7 В миллиметрах",
+        "Окончание табл. 7 В миллиметрах",
+        "Таблица 8",
+    ]
+
+
+def test_continued_table_carries_sentence_that_introduces_it():
+    """На странице «Продолжения табл. 2» нет слов «внутренняя метрическая резьба» —
+    чанк со строкой для шага 1 не находился по вопросу о ней."""
+    from gost_rag.ingest.loaders import assign_sections
+    from gost_rag.models import Block
+
+    blocks = [
+        Block(
+            text=(
+                "3. Размеры сбегов для внутренней метрической резьбы — на черт. 7 и в табл. 2.\n"
+                "Форма и размеры проточек для внутренней метрической резьбы — на черт. 8 и в\n"
+                "табл. 2. Шаг выбирают по ГОСТ 8724."
+            ),
+            page_no=3,
+        ),
+        _tbl("Таблица 2 В миллиметрах", 3),
+        _tbl("Продолжение табл. 2 В миллиметрах", 4),
+    ]
+    assign_sections(blocks)
+    for table in blocks[1:]:
+        _caption, context, header, *_ = table.text.split("\n")
+        assert context.startswith("К п. 3: Размеры сбегов для внутренней метрической резьбы")
+        assert "Форма и размеры проточек" in context
+        # Предложение без ссылки на таблицу в контекст не попадает.
+        assert "ГОСТ 8724" not in context
+        assert header == "| f | R |"
+
+
+def test_table_reference_list_and_range_cover_each_table():
+    from gost_rag.ingest.loaders import _ref_numbers
+
+    assert _ref_numbers("3, 4") == [3, 4]
+    assert _ref_numbers("3. 4") == [3, 4]
+    assert _ref_numbers("3—7") == [3, 4, 5, 6, 7]
+    assert _ref_numbers("2") == [2]
+
+
+def test_split_table_repeats_caption_and_context_lines():
+    """Строка контекста — часть заголовка: при разрезании таблицы она повторяется."""
+    from gost_rag.ingest.chunk import ApproxTokenizer, prepare_blocks
+    from gost_rag.models import Block
+
+    rows = "\n".join(f"| {i} | {i},5 |" for i in range(60))
+    block = Block(
+        text=f"Таблица 2 В мм\nК п. 3: для внутренней резьбы.\n| P | R |\n| --- | --- |\n{rows}",
+        page_no=3,
+        kind="table",
+    )
+    parts = prepare_blocks([block], ApproxTokenizer(), max_tokens=60)
+    assert len(parts) > 1
+    for part in parts:
+        assert part.text.startswith("Таблица 2 В мм\nК п. 3: для внутренней резьбы.\n| P | R |")

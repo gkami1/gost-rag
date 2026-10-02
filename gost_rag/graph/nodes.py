@@ -16,9 +16,12 @@ from gost_rag.graph.state import (
     ungrounded_numbers,
     used_indices,
 )
+from gost_rag.ingest.metadata import registry_key
 from gost_rag.logging import get_logger
 from gost_rag.retrieval.filters import known_designations, resolve_designations
-from gost_rag.retrieval.store import hybrid_search
+from gost_rag.retrieval.registry import LiveRegistry
+from gost_rag.retrieval.rerank import passes_dense_gate, select_context
+from gost_rag.retrieval.store import dense_only_search, hybrid_search
 
 log = get_logger(__name__)
 
@@ -27,14 +30,23 @@ class Retrieval:
     """Связка «клиент Qdrant + эмбеддер + реранкер», разделяемая узлами графа.
 
     Список обозначений корпуса кэшируется: он нужен на каждый запрос, а меняется
-    только при переиндексации.
+    только при переиндексации. Реестр, наоборот, читается живым: статус
+    стандарта меняется правкой CSV, без переиндексации.
     """
 
-    def __init__(self, client, embedder, reranker, settings: Settings | None = None) -> None:
+    def __init__(
+        self,
+        client,
+        embedder,
+        reranker,
+        settings: Settings | None = None,
+        registry: LiveRegistry | None = None,
+    ) -> None:
         self.client = client
         self.embedder = embedder
         self.reranker = reranker
         self.settings = settings or get_settings()
+        self.registry = registry or LiveRegistry(self.settings.registry_path)
         self._designations: set[str] | None = None
 
     @property
@@ -69,9 +81,22 @@ def make_retrieve_node(deps: Retrieval):
             return {**update, "candidates": []}
 
         embedding = deps.embedder.encode_one(question)
+        dense = dense_only_search(
+            deps.client, embedding, deps.settings, query_filter=match.filter, limit=1
+        )
+        dense_top = dense[0].fusion_score if dense else None
+        if not passes_dense_gate(dense_top, deps.settings):
+            # Решение №6: даже ближайший фрагмент далёк от вопроса — отвечать не
+            # по чему. Ни реранкер, ни LLM не вызываются.
+            log.info("retrieve_weak_sources", question=question[:80], dense_top=dense_top)
+            return {**update, "candidates": [], "dense_top": dense_top}
         candidates = hybrid_search(deps.client, embedding, deps.settings, query_filter=match.filter)
-        log.info("retrieved", question=question[:80], candidates=len(candidates))
-        return {**update, "candidates": candidates}
+        # Статус и замена — из реестра сейчас, а не из индекса на момент загрузки.
+        deps.registry.apply(candidates)
+        log.info(
+            "retrieved", question=question[:80], candidates=len(candidates), dense_top=dense_top
+        )
+        return {**update, "candidates": candidates, "dense_top": dense_top}
 
     return retrieve
 
@@ -82,8 +107,10 @@ def make_rerank_node(deps: Retrieval):
         if not candidates:
             # Отказ не должен зависеть от того, как реранкер обходится с пустым входом.
             return {"reranked": [], "best_score": 0.0}
-        reranked = deps.reranker.rerank(state["question"], candidates)
-        best = max((c.rerank_score or 0.0 for c in reranked), default=0.0)
+        reranked = select_context(state["question"], candidates, deps.reranker, deps.settings)
+        # Лучший скор — по всем оценённым кандидатам, а не по прошедшим порог: иначе
+        # при отказе он всегда 0.0 и не видно, насколько вопрос не дотянул до порога.
+        best = max((c.rerank_score or 0.0 for c in candidates), default=0.0)
         return {"reranked": reranked, "best_score": best}
 
     return rerank
@@ -99,14 +126,58 @@ def guard(state: GraphState) -> str:
     return "generate" if state.get("reranked") else "refuse"
 
 
-def refuse(state: GraphState) -> GraphState:
-    log.info("refused", question=state["question"][:80], best=state.get("best_score", 0.0))
-    missing = state.get("missing_designations") or []
-    answer = (
-        missing_documents_message(missing, state.get("designation_alternatives") or {})
-        if missing
-        else NO_CONTEXT_MESSAGE
-    )
+def make_refuse_node(deps: Retrieval):
+    def refuse(state: GraphState) -> GraphState:
+        missing = state.get("missing_designations") or []
+        log.info(
+            "refused",
+            question=state["question"][:80],
+            reason=_refusal_reason(state, deps.settings),
+            dense_top=state.get("dense_top"),
+            best=round(state.get("best_score", 0.0), 4),
+        )
+        answer = (
+            missing_documents_message(missing, state.get("designation_alternatives") or {})
+            if missing
+            else NO_CONTEXT_MESSAGE
+        )
+        # Без списка корпуса отказ неотличим от сбоя поиска: пользователь не знает,
+        # что тема просто не покрыта, и ищет ошибку там, где её нет.
+        corpus = corpus_summary(deps.designations, deps.registry)
+        if corpus:
+            answer = f"{answer}\n\n{corpus}"
+        return _refusal(answer)
+
+    return refuse
+
+
+def _refusal_reason(state: GraphState, settings: Settings) -> str:
+    """Какая из проверок остановила вопрос — для журнала, не для пользователя."""
+    if state.get("missing_designations") and not state.get("candidates"):
+        return "missing_designation"
+    if not passes_dense_gate(state.get("dense_top"), settings):
+        return "weak_dense_match"
+    if not state.get("candidates"):
+        return "no_candidates"
+    return "below_rerank_threshold"
+
+
+def corpus_summary(designations: set[str], registry: LiveRegistry, limit: int = 20) -> str:
+    """«Сейчас в базе: …» — обозначения из индекса, названия из реестра."""
+    if not designations:
+        return ""
+    rows = registry.rows()
+    ordered = sorted(designations)
+    lines = []
+    for designation in ordered[:limit]:
+        title = (rows.get(registry_key(designation)) or {}).get("title")
+        lines.append(f"— {designation}" + (f" «{title}»" if title else ""))
+    if len(ordered) > limit:
+        lines.append(f"…и ещё {len(ordered) - limit}")
+    return "Сейчас в базе:\n" + "\n".join(lines)
+
+
+def _refusal(answer: str) -> GraphState:
     return {
         "answer": answer,
         "citations": [],

@@ -17,6 +17,7 @@ from gost_rag.graph.state import (
     used_indices,
 )
 from gost_rag.models import RetrievedChunk
+from gost_rag.retrieval.registry import LiveRegistry
 
 
 def _chunk(
@@ -210,7 +211,7 @@ class FakeReranker:
 
 
 @pytest.fixture
-def patched_retrieval(monkeypatch):
+def patched_retrieval(monkeypatch, tmp_path):
     """Подменяем поиск: граф проверяется без Qdrant и без моделей."""
     found: list[RetrievedChunk] = []
     searches: list[object] = []
@@ -220,6 +221,13 @@ def patched_retrieval(monkeypatch):
         return list(found)
 
     monkeypatch.setattr(nodes_module, "hybrid_search", fake_search)
+    dense_top = {"score": 0.9}
+
+    def fake_dense(*args, **kwargs):
+        hit = RetrievedChunk(point_id="d", text="", payload={}, fusion_score=dense_top["score"])
+        return [hit] if found else []
+
+    monkeypatch.setattr(nodes_module, "dense_only_search", fake_dense)
 
     class FakeEmbedder:
         def encode_one(self, text):
@@ -230,11 +238,14 @@ def patched_retrieval(monkeypatch):
         found.extend(keep)
         monkeypatch.setattr(nodes_module, "known_designations", lambda *a, **k: set(corpus or ()))
         make.searches = searches
+        make.dense_top = dense_top
         return Retrieval(
             client=object(),
             embedder=FakeEmbedder(),
             reranker=FakeReranker(keep),
             settings=Settings(history_turns=0),
+            # Изоляция от настоящего data/registry/documents.csv.
+            registry=LiveRegistry(tmp_path / "registry.csv"),
         )
 
     return make
@@ -406,3 +417,154 @@ def test_answer_mentioning_limits_is_not_mistaken_for_refusal(patched_retrieval)
     llm = FakeLLM("Сбег — не более 2,8 мм [S1].\n\nДругих ограничений во фрагментах нет.")
     graph = build_graph(patched_retrieval(chunks), llm, Settings(history_turns=0))
     assert _invoke(graph, "сбег")["insufficient"] is False
+
+
+# --------------------------------------------------------------------------- #
+# Отказ по плотному скору и режим без реранкера
+# --------------------------------------------------------------------------- #
+
+
+def test_weak_dense_match_refuses_without_search_rerank_or_llm(patched_retrieval):
+    """Решение №6 держится и без кросс-энкодера: порог — по косинусу."""
+    chunks = [_chunk("a", "ГОСТ 1-11", text="текст 1")]
+    llm = FakeLLM("не должно быть вызвано")
+    deps = patched_retrieval(chunks)
+    deps.settings = Settings(history_turns=0, min_dense_score=0.55)
+    patched_retrieval.dense_top["score"] = 0.46
+    graph = build_graph(deps, llm, deps.settings)
+
+    result = _invoke(graph, "какая ставка налога на прибыль")
+    assert result["insufficient"] is True
+    assert llm.calls == 0
+    assert patched_retrieval.searches == []
+
+
+def test_strong_dense_match_passes_gate(patched_retrieval):
+    chunks = [_chunk("a", "ГОСТ 1-11", text="значение 5 мм")]
+    deps = patched_retrieval(chunks)
+    deps.settings = Settings(history_turns=0, min_dense_score=0.55)
+    patched_retrieval.dense_top["score"] = 0.7
+    graph = build_graph(deps, FakeLLM("5 мм [S1]."), deps.settings)
+    assert _invoke(graph, "вопрос")["insufficient"] is False
+
+
+def test_reranker_off_takes_rrf_order_and_never_calls_it():
+    from gost_rag.retrieval.rerank import select_context
+
+    class ExplodingReranker:
+        def rerank(self, *args, **kwargs):
+            raise AssertionError("реранкер выключен и не должен вызываться")
+
+    candidates = [_chunk(str(i), "ГОСТ 1-11") for i in range(10)]
+    settings = Settings(rerank_candidates=0, rerank_top_n=6)
+    kept = select_context("вопрос", candidates, ExplodingReranker(), settings)
+    assert [c.point_id for c in kept] == [c.point_id for c in candidates[:6]]
+
+
+def test_reranker_sees_only_configured_number_of_candidates():
+    from gost_rag.retrieval.rerank import select_context
+
+    seen: list[int] = []
+
+    class CountingReranker:
+        def rerank(self, question, candidates, **kwargs):
+            seen.append(len(candidates))
+            return candidates[:2]
+
+    candidates = [_chunk(str(i), "ГОСТ 1-11") for i in range(30)]
+    select_context("вопрос", candidates, CountingReranker(), Settings(rerank_candidates=8))
+    assert seen == [8]
+
+
+# --------------------------------------------------------------------------- #
+# Статус из реестра в момент ответа
+# --------------------------------------------------------------------------- #
+
+_HEADER = "designation,title,year,status,source_url,replaced_by\n"
+
+
+def test_status_change_in_registry_reaches_answer_without_reindex(patched_retrieval, tmp_path):
+    """Решение №8: индекс помнит «действующий», реестр уже говорит «заменён»."""
+    chunks = [_chunk("a", "ГОСТ 5264-80", status="действующий", text="смещение 0,5 мм")]
+    deps = patched_retrieval(chunks)
+    registry_file = tmp_path / "registry.csv"
+    registry_file.write_text(
+        _HEADER + "ГОСТ 5264-80,Ручная дуговая сварка,1980,заменён,,ГОСТ 5264-2026\n",
+        encoding="utf-8",
+    )
+    deps.registry = LiveRegistry(registry_file)
+    graph = build_graph(deps, FakeLLM("Смещение 0,5 мм [S1]."), deps.settings)
+
+    [citation] = _invoke(graph, "смещение кромок")["citations"]
+    assert citation["status"] == "заменён"
+    assert citation["replaced_by"] == "ГОСТ 5264-2026"
+    assert "(заменён)" in citation["label"]
+
+
+def test_registry_is_reread_after_file_changes(tmp_path):
+    path = tmp_path / "registry.csv"
+    path.write_text(_HEADER + "ГОСТ 1-11,Т,2011,действующий,,\n", encoding="utf-8")
+    registry = LiveRegistry(path)
+    assert registry.overlay({"designation": "ГОСТ 1-11"})["status"] == "действующий"
+
+    path.write_text(_HEADER + "ГОСТ 1-11,Т,2011,отменён,,\n", encoding="utf-8")
+    assert registry.overlay({"designation": "ГОСТ 1-11"})["status"] == "отменён"
+
+
+def test_document_absent_from_registry_keeps_indexed_status(tmp_path):
+    registry = LiveRegistry(tmp_path / "missing.csv")
+    payload = {"designation": "ГОСТ 1-11", "status": "действующий"}
+    assert registry.overlay(payload)["status"] == "действующий"
+
+
+class _BelowThresholdReranker:
+    """Оценивает всех кандидатов, но порог не проходит никто — как в жизни."""
+
+    def __init__(self, score: float) -> None:
+        self.score = score
+
+    def rerank(self, query, candidates, **kwargs):
+        for candidate in candidates:
+            candidate.rerank_score = self.score
+        return []
+
+
+def test_refusal_keeps_real_best_rerank_score(patched_retrieval):
+    """В журнале отказа стояло best=0.0 при настоящем лучшем скоре 0.049: скор
+    считался по прошедшим порог, а их при отказе нет."""
+    deps = patched_retrieval([_chunk("a", "ГОСТ 5264-80")], corpus={"ГОСТ 5264-80"})
+    deps.reranker = _BelowThresholdReranker(0.049)
+    llm = FakeLLM("не должно быть вызвано")
+    graph = build_graph(deps, llm, Settings(history_turns=0))
+
+    result = _invoke(graph, "радиус гибки листа 3 мм")
+    assert result["insufficient"] is True
+    assert result["best_score"] == pytest.approx(0.049)
+    assert llm.calls == 0
+
+
+def test_refusal_lists_what_the_corpus_contains(patched_retrieval, tmp_path):
+    """Без списка корпуса отказ «не нашлось» неотличим от сломанного поиска."""
+    (tmp_path / "registry.csv").write_text(
+        "designation,title,year,status,source_url,replaced_by\n"
+        'ГОСТ 10549-80,"Выход резьбы",1980,действующий,,\n',
+        encoding="utf-8",
+    )
+    deps = patched_retrieval([], corpus={"ГОСТ 5264-80", "ГОСТ 10549-80"})
+    graph = build_graph(deps, FakeLLM("—"), Settings(history_turns=0))
+
+    answer = _invoke(graph, "радиус гибки листа 3 мм")["answer"]
+    assert answer.startswith(NO_CONTEXT_MESSAGE)
+    assert "Сейчас в базе:" in answer
+    # Название — из реестра; документ без строки в реестре — хотя бы обозначением.
+    assert "— ГОСТ 10549-80 «Выход резьбы»" in answer
+    assert "— ГОСТ 5264-80" in answer
+
+
+def test_missing_standard_refusal_also_lists_corpus(patched_retrieval):
+    deps = patched_retrieval([], corpus={"ГОСТ 5264-80"})
+    graph = build_graph(deps, FakeLLM("—"), Settings(history_turns=0))
+
+    answer = _invoke(graph, "что говорит ГОСТ 16037-80?")["answer"]
+    assert "ГОСТ 16037-80 нет в базе" in answer
+    assert "— ГОСТ 5264-80" in answer

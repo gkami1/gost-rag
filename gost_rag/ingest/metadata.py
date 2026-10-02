@@ -104,12 +104,12 @@ def load_registry(path: Path) -> dict[str, dict[str, str]]:
             designation = (row.get("designation") or "").strip()
             if not designation:
                 continue
-            registry[_registry_key(designation)] = {k: (v or "").strip() for k, v in row.items()}
+            registry[registry_key(designation)] = {k: (v or "").strip() for k, v in row.items()}
     log.info("registry_loaded", path=str(path), documents=len(registry))
     return registry
 
 
-def _registry_key(designation: str) -> str:
+def registry_key(designation: str) -> str:
     return re.sub(r"\s+", " ", designation).strip().upper()
 
 
@@ -135,7 +135,7 @@ def _fold_status(value: str) -> str:
     return value.strip().casefold().replace("ё", "е").replace("й", "и")
 
 
-def _coerce_status(raw: str) -> DocStatus:
+def coerce_status(raw: str) -> DocStatus:
     return _STATUS_ALIASES.get(_fold_status(raw), "неизвестно")
 
 
@@ -153,9 +153,9 @@ def build_metadata(
     """
     designation = find_designation(path.name) or find_designation(first_page_text[:3000])
     registry = registry or {}
-    row = registry.get(_registry_key(designation)) if designation else None
+    row = registry.get(registry_key(designation)) if designation else None
 
-    status: DocStatus = _coerce_status(row["status"]) if row and row.get("status") else "неизвестно"
+    status: DocStatus = coerce_status(row["status"]) if row and row.get("status") else "неизвестно"
     title = (row.get("title") if row else None) or _guess_title(first_page_text, designation)
     # Реестр надёжнее обозначения: в нём год редакции, а не год из шифра.
     year = int(row["year"]) if row and row.get("year", "").isdigit() else parse_year(designation)

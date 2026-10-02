@@ -180,7 +180,21 @@ def _source_dict(chunk, index: int) -> dict[str, Any]:
 def documents():
     settings = get_settings()
     with _index_client() as client:
-        return [DocumentSummary(**doc) for doc in list_documents(client, settings)]
+        docs = list_documents(client, settings)
+    # Статус в списке корпуса — тот же, что рядом с цитатой: из реестра, а не из индекса.
+    registry = _registry()
+    return [DocumentSummary(**registry.overlay(doc)) for doc in docs]
+
+
+def _registry():
+    """Реестр графа, если граф уже собран, иначе — свой, с тем же файлом."""
+    from gost_rag.graph.build import get_runtime
+    from gost_rag.retrieval.registry import LiveRegistry
+
+    if get_runtime.cache_info().currsize:
+        deps, _graph = get_runtime()
+        return deps.registry
+    return LiveRegistry(get_settings().registry_path)
 
 
 @app.get("/api/source/{doc_id}")

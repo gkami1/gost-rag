@@ -73,7 +73,7 @@ def _split_table_block(block: Block, tokenizer: Tokenizer, max_tokens: int) -> l
     теряет и номер таблицы, и единицы измерения.
     """
     lines = block.text.split("\n")
-    separator = next((i for i, line in enumerate(lines[:4]) if _is_separator_row(line)), None)
+    separator = next((i for i, line in enumerate(lines[:6]) if _is_separator_row(line)), None)
     has_header = separator is not None and separator >= 1 and len(lines) > separator + 1
     header = lines[: separator + 1] if has_header else []
     body = lines[len(header) :]

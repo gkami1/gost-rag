@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable, Iterator
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from qdrant_client import QdrantClient, models
@@ -150,6 +151,59 @@ def delete_document(client: QdrantClient, doc_id: str, settings: Settings | None
         ),
         wait=True,
     )
+
+
+def document_sources(
+    client: QdrantClient, doc_id: str, settings: Settings | None = None
+) -> set[str]:
+    """Из каких файлов в индексе лежат чанки документа ``doc_id``."""
+    settings = settings or get_settings()
+    if not client.collection_exists(settings.collection_name):
+        return set()
+    selector = models.Filter(
+        must=[models.FieldCondition(key="doc_id", match=models.MatchValue(value=doc_id))]
+    )
+    sources: set[str] = set()
+    offset = None
+    while True:
+        points, offset = client.scroll(
+            collection_name=settings.collection_name,
+            scroll_filter=selector,
+            limit=256,
+            offset=offset,
+            with_payload=["source_path"],
+            with_vectors=False,
+        )
+        sources.update(str((p.payload or {}).get("source_path") or "") for p in points)
+        if offset is None:
+            break
+    sources.discard("")
+    return sources
+
+
+def prune_missing_sources(
+    client: QdrantClient, root: Path, settings: Settings | None = None
+) -> list[str]:
+    """Удалить из индекса документы, чьих файлов под ``root`` больше нет.
+
+    Без этого удалённый или переименованный стандарт жил в индексе вечно и
+    продолжал попадать в ответы. Трогаются только файлы внутри ``root``:
+    индексация одного файла из другой папки не должна чистить весь корпус.
+    """
+    settings = settings or get_settings()
+    root = root.resolve()
+    removed: list[str] = []
+    for doc in list_documents(client, settings):
+        source = doc.get("source_path")
+        if not source:
+            continue
+        path = Path(source).resolve()
+        if not path.is_relative_to(root) or path.exists():
+            continue
+        delete_document(client, doc["doc_id"], settings)
+        removed.append(doc["doc_id"])
+        log.info("pruned_missing_source", doc_id=doc["doc_id"], source=source)
+    return removed
 
 
 def count_points(client: QdrantClient, settings: Settings | None = None) -> int:

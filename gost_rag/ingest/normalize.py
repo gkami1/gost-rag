@@ -49,6 +49,17 @@ def clean_page_text(text: str) -> str:
     return _MULTI_NEWLINE_RE.sub("\n\n", text).strip()
 
 
+#: Подписи таблиц и единицы измерения. Длинная таблица повторяет их вверху
+#: каждой страницы («Продолжение таблицы 1», «В миллиметрах»), и по частоте они
+#: неотличимы от колонтитула. Вырезать их нельзя: без «В миллиметрах» все 13
+#: страниц табл. 1 ГОСТ 24705-2004 доходили до индекса без единиц измерения.
+_TABLE_LABEL_RE = re.compile(
+    r"^\s*(?:Т\s*а\s*б\s*л\s*и\s*ц\s*а|(?:Продолжение|Окончание)\s+табл"
+    r"|(?:Размеры\s*,?\s*)?(?:в\s+)?(?:мм|миллиметрах)\b)",
+    re.IGNORECASE,
+)
+
+
 def find_repeated_lines(
     pages: Iterable[str],
     *,
@@ -73,7 +84,7 @@ def find_repeated_lines(
         edges = lines[:window] + lines[-window:]
         # Одна и та же строка на одной странице считается один раз.
         for line in set(edges):
-            if len(line) <= 80 and not CLAUSE_RE.match(line):
+            if len(line) <= 80 and not CLAUSE_RE.match(line) and not _TABLE_LABEL_RE.match(line):
                 counter[_normalize_for_compare(line)] += 1
 
     threshold = max(min_pages // 2, int(len(page_list) * min_ratio))
@@ -93,7 +104,9 @@ def _normalize_for_compare(line: str) -> str:
     «... на странице 1» и «... на странице 2» слились бы в одну и весь текст
     документа был бы принят за колонтитул и вырезан.
     """
-    collapsed = line.casefold().strip()
+    # Тире в обозначении распознаётся то длинным, то дефисом: «5264—80» и
+    # «5264-80» на соседних страницах — один и тот же колонтитул.
+    collapsed = re.sub(r"[‐‑–—]", "-", line.casefold().strip())
     alpha_only = re.sub(r"[\d\W_]+", "", collapsed)
     if len(alpha_only) <= _LOCATOR_ALPHA_LIMIT:
         # Порядок слов тоже не важен: в книжной вёрстке чётная страница несёт

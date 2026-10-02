@@ -142,3 +142,25 @@ def test_repeated_line_in_body_is_kept():
     body = "\n".join(["шапка", "a", "b", "c", "повтор", "d", "e", "f", "подвал"])
     repeated = {"повтор"}
     assert "повтор" in strip_repeated_lines(body, repeated)
+
+
+def test_table_caption_and_units_are_not_running_headers():
+    """ГОСТ 24705-2004: табл. 1 на 13 страницах, у каждой сверху подпись и единицы."""
+    pages = [
+        f"ГОСТ 24705—2004\nПродолжение таблицы 1\nВ миллиметрах\n| {n} | 1 |\nтекст {n}"
+        for n in range(8)
+    ]
+    repeated = find_repeated_lines(pages)
+    assert strip_repeated_lines(pages[3], repeated).startswith(
+        "Продолжение таблицы 1\nВ миллиметрах"
+    )
+    assert "ГОСТ 24705—2004" not in strip_repeated_lines(pages[3], repeated)
+
+
+def test_header_with_dash_variants_collapses_to_one():
+    pages = [
+        (f"С. {n} ГОСТ 5264-80" if n % 2 else f"ГОСТ 5264—80 С. {n}") + f"\nтекст страницы {n}"
+        for n in range(8)
+    ]
+    repeated = find_repeated_lines(pages)
+    assert all("ГОСТ" not in strip_repeated_lines(page, repeated) for page in pages)

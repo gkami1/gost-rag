@@ -44,6 +44,7 @@ class DocumentSummary(BaseModel):
     designation: str | None = None
     title: str | None = None
     status: str | None = None
+    replaced_by: str | None = None
     chunks: int = 0
 
 

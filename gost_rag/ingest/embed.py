@@ -31,6 +31,18 @@ class Embedding:
         return list(self.sparse.values())
 
 
+def configure_torch(settings: Settings) -> None:
+    """Число потоков torch на CPU — до загрузки модели, один раз на процесс."""
+    import os
+
+    import torch
+
+    threads = settings.torch_threads or os.cpu_count() or 1
+    if torch.get_num_threads() != threads:
+        torch.set_num_threads(threads)
+        log.info("torch_threads", threads=threads)
+
+
 def _detect_device(explicit: str | None) -> str:
     if explicit:
         return explicit
@@ -59,6 +71,8 @@ class BGEM3Embedder:
     def _load(self):
         if self._model is None:
             from FlagEmbedding import BGEM3FlagModel
+
+            configure_torch(self._settings)
 
             log.info(
                 "loading_embedder",

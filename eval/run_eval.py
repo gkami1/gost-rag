@@ -48,8 +48,14 @@ from gost_rag.models import RetrievedChunk
 
 QUESTIONS_PATH = Path(__file__).with_name("questions.yaml")
 
-#: Пороги, которые перебираются при подборе. Скоры — сигмоида кросс-энкодера.
-THRESHOLDS = (0.0, 0.01, 0.02, 0.05, 0.1, 0.2, 0.3, 0.5, 0.7, 0.9)
+#: Сигналы отказа и пороги, которые для них перебираются: сигмоида
+#: кросс-энкодера и косинус лучшего плотного попадания (считается всегда и
+#: бесплатно, поэтому годится для CPU, где реранкер выключен).
+SIGNALS = {
+    "top_score": (0.0, 0.01, 0.02, 0.05, 0.1, 0.2, 0.3, 0.5, 0.7, 0.9),
+    "dense_top": (0.0, 0.45, 0.48, 0.5, 0.52, 0.53, 0.54, 0.55, 0.56, 0.58, 0.6),
+}
+THRESHOLDS = SIGNALS["top_score"]
 
 
 @dataclass
@@ -190,15 +196,15 @@ def load_questions(path: Path) -> list[Question]:
 # --------------------------------------------------------------------------- #
 
 
-def refused_at(record: dict, threshold: float) -> bool:
-    """Отказался бы граф на этом вопросе при данном пороге.
+def refused_at(record: dict, threshold: float, key: str = "top_score") -> bool:
+    """Отказался бы граф на этом вопросе при данном пороге сигнала ``key``.
 
     Две причины, как в графе: вопрос называет только отсутствующие документы,
-    или лучший скор кросс-энкодера ниже порога.
+    или лучший скор (кросс-энкодера или плотного поиска) ниже порога.
     """
     if record.get("named_missing_only"):
         return True
-    top = record.get("top_score")
+    top = record.get(key)
     return top is None or top < threshold
 
 
@@ -228,12 +234,14 @@ class GateStats:
         return (self.answer_rate + self.refusal_rate) / 2
 
 
-def gate_stats(records: list[dict], threshold: float, split: str | None = None) -> GateStats:
+def gate_stats(
+    records: list[dict], threshold: float, split: str | None = None, key: str = "top_score"
+) -> GateStats:
     stats = GateStats(threshold)
     for record in records:
         if split and record["split"] != split:
             continue
-        refused = refused_at(record, threshold)
+        refused = refused_at(record, threshold, key)
         if record["out_of_corpus"]:
             stats.total_out += 1
             stats.refused_out += refused
@@ -243,7 +251,7 @@ def gate_stats(records: list[dict], threshold: float, split: str | None = None) 
     return stats
 
 
-def choose_threshold(records: list[dict], thresholds=THRESHOLDS) -> float:
+def choose_threshold(records: list[dict], thresholds=THRESHOLDS, key: str = "top_score") -> float:
     """Порог с лучшей сбалансированной точностью на части tune.
 
     При равенстве — меньший: ложный отказ на вопросе из корпуса хотя бы виден
@@ -251,7 +259,7 @@ def choose_threshold(records: list[dict], thresholds=THRESHOLDS) -> float:
     """
     best, best_score = thresholds[0], -1.0
     for threshold in thresholds:
-        score = gate_stats(records, threshold, split="tune").balanced
+        score = gate_stats(records, threshold, split="tune", key=key).balanced
         if score is not None and score > best_score:
             best, best_score = threshold, score
     return best
@@ -436,12 +444,18 @@ def main() -> int:
         type=Path,
         help="Не запускать модели: пересчитать порог по скорам из прошлого --json",
     )
+    parser.add_argument(
+        "--no-full-context",
+        action="store_true",
+        help="С --generate: не гонять режим «весь корпус в контексте» (дорогой, от поиска "
+        "не зависит — достаточно одного прогона)",
+    )
     parser.add_argument("--json", type=Path, help="Куда сохранить результат в JSON")
     args = parser.parse_args()
 
     if args.scores_from:
         previous = json.loads(args.scores_from.read_text(encoding="utf-8"))
-        print(render_gate(previous["per_question"], get_settings().rerank_threshold))
+        print(render_gates(previous["per_question"], get_settings()))
         if "generation" in previous:
             rescored = rescore_generation(previous["generation"], load_questions(args.questions))
             print(_render_generation(rescored))
@@ -458,7 +472,7 @@ def main() -> int:
     from gost_rag.ingest.embed import get_embedder
     from gost_rag.ingest.index import count_points, get_client
     from gost_rag.retrieval.filters import known_designations, resolve_designations
-    from gost_rag.retrieval.rerank import get_reranker
+    from gost_rag.retrieval.rerank import get_reranker, passes_dense_gate, select_context
     from gost_rag.retrieval.store import dense_only_search, hybrid_search
 
     questions = load_questions(args.questions)
@@ -472,7 +486,9 @@ def main() -> int:
     available = known_designations(client, settings)
     _warn_about_missing_gold([q for q in questions if not q.out_of_corpus], available)
 
-    slices = {name: SliceStats(name) for name in ("dense", "rrf", "rerank")}
+    use_reranker = settings.rerank_candidates > 0
+    slice_names = ("dense", "rrf", "rerank") if use_reranker else ("dense", "rrf")
+    slices = {name: SliceStats(name) for name in slice_names}
     records: list[dict] = []
     kept_by_id: dict[str, list[RetrievedChunk]] = {}
     matches = {}
@@ -499,20 +515,36 @@ def main() -> int:
 
         embedding = embedder.encode_one(question.question)
         dense = dense_only_search(client, embedding, settings, query_filter=match.filter)
+        dense_top = dense[0].fusion_score if dense else None
         rrf = hybrid_search(client, embedding, settings, query_filter=match.filter)
-        # Порядок кросс-энкодера без порога — отдельно от решения об отказе.
-        ranked = reranker.rerank(question.question, list(rrf), top_n=len(rrf), threshold=-1.0)
-        top = ranked[0].rerank_score if ranked else None
-        kept_by_id[question.id] = [
-            c for c in ranked if (c.rerank_score or 0.0) >= settings.rerank_threshold
-        ][: settings.rerank_top_n]
+        if use_reranker:
+            # Порядок кросс-энкодера без порога — отдельно от решения об отказе.
+            pool = list(rrf[: settings.rerank_candidates])
+            ranked = reranker.rerank(question.question, pool, top_n=len(pool), threshold=-1.0)
+        else:
+            ranked = list(rrf)
+        top = ranked[0].rerank_score if use_reranker and ranked else None
+        # Контекст для генерации — ровно так, как его соберёт граф.
+        kept_by_id[question.id] = (
+            select_context(question.question, list(rrf), reranker, settings)
+            if passes_dense_gate(dense_top, settings)
+            else []
+        )
 
+        rrf_rank = {c.point_id: i for i, c in enumerate(rrf, start=1)}
         record.update(
             {
+                # Откуда в RRF пришли фрагменты контекста: по этим позициям видно,
+                # сколько кандидатов реранкеру нужно на самом деле.
+                "kept_rrf_ranks": [rrf_rank.get(c.point_id) for c in kept_by_id[question.id]],
                 "top_score": top,
+                "dense_top": dense_top,
                 "top_found": ranked[0].designation if ranked else None,
                 "scores": [
-                    {"designation": c.designation, "score": round(c.rerank_score or 0.0, 4)}
+                    {
+                        "designation": c.designation,
+                        "score": round(c.rerank_score if use_reranker else c.fusion_score, 4),
+                    }
                     for c in ranked[: args.k]
                 ],
             }
@@ -520,7 +552,8 @@ def main() -> int:
         if not question.out_of_corpus:
             slices["dense"].update(dense, question, args.k)
             slices["rrf"].update(rrf, question, args.k)
-            slices["rerank"].update(ranked, question, args.k)
+            if use_reranker:
+                slices["rerank"].update(ranked, question, args.k)
             record.update(
                 {
                     "rank_rrf": _first_rank(rrf[: args.k], question.gold_designation),
@@ -533,20 +566,29 @@ def main() -> int:
 
     in_corpus = [q for q in questions if not q.out_of_corpus]
     report = [_render_ranking(slices, records, args.k, len(in_corpus))]
-    report.append(render_gate(records, settings.rerank_threshold))
+    report.append(render_gates(records, settings))
 
     generation: dict | None = None
     if args.generate:
-        generation = _generate_all(questions, kept_by_id, matches, client, settings)
+        generation = _generate_all(
+            questions, kept_by_id, matches, client, settings, full_context=not args.no_full_context
+        )
         report.append(_render_generation(generation))
 
     print("\n".join(report))
 
     if args.json:
         tuned = choose_threshold(records)
+        tuned_dense = choose_threshold(records, SIGNALS["dense_top"], key="dense_top")
         payload = {
             "k": args.k,
+            "rerank_candidates": settings.rerank_candidates,
             "rerank_threshold": settings.rerank_threshold,
+            "min_dense_score": settings.min_dense_score,
+            "tuned_dense_threshold": tuned_dense,
+            "tuned_dense_on_test": _gate_dict(
+                gate_stats(records, tuned_dense, split="test", key="dense_top")
+            ),
             "slices": {
                 name: {
                     "recall": s.recall,
@@ -556,8 +598,8 @@ def main() -> int:
                 }
                 for name, s in slices.items()
             },
-            "refusal_rate": gate_stats(records, settings.rerank_threshold).refusal_rate,
-            "answer_rate": gate_stats(records, settings.rerank_threshold).answer_rate,
+            "refusal_rate": _graph_gate(records, settings).refusal_rate,
+            "answer_rate": _graph_gate(records, settings).answer_rate,
             "tuned_threshold": tuned,
             "tuned_on_test": _gate_dict(gate_stats(records, tuned, split="test")),
             "per_question": records,
@@ -569,12 +611,14 @@ def main() -> int:
     return 0
 
 
-def _generate_all(questions, kept_by_id, matches, client, settings) -> dict:
+def _generate_all(questions, kept_by_id, matches, client, settings, full_context=True) -> dict:
     from gost_rag.llm.client import build_chat_model
 
     llm = build_chat_model(settings, streaming=False)
-    corpus = _all_chunks(client, settings)
-    modes = {"rag": GenStats("rag"), "full_context": GenStats("full_context")}
+    corpus = _all_chunks(client, settings) if full_context else []
+    modes = {"rag": GenStats("rag")}
+    if full_context:
+        modes["full_context"] = GenStats("full_context")
     answers: list[dict] = []
 
     for number, question in enumerate(questions, start=1):
@@ -587,10 +631,12 @@ def _generate_all(questions, kept_by_id, matches, client, settings) -> dict:
             )
         else:
             rag = {"answer": "", "insufficient": True, "warnings": [], "correct": False}
-        full = _run_generation(question, corpus, llm, settings)
         modes["rag"].update(question, rag)
-        modes["full_context"].update(question, full)
-        answers.append({"id": question.id, "rag": rag, "full_context": full})
+        entry = {"id": question.id, "rag": rag}
+        if full_context:
+            entry["full_context"] = _run_generation(question, corpus, llm, settings)
+            modes["full_context"].update(question, entry["full_context"])
+        answers.append(entry)
 
     return {"modes": _mode_dicts(modes), "answers": answers}
 
@@ -643,8 +689,7 @@ def _render_ranking(slices: dict[str, SliceStats], records: list[dict], k: int, 
         f"{'срез':<10} {'recall@k':>10} {'MRR@k':>10} {'пункт@k':>10} {'пункт@1':>10}",
         "-" * 54,
     ]
-    for name in ("dense", "rrf", "rerank"):
-        stats = slices[name]
+    for name, stats in slices.items():
         lines.append(
             f"{name:<10} {stats.recall:>10.3f} {stats.mrr:>10.3f} "
             f"{_fmt(stats.section_recall):>10} {_fmt(stats.section_at_1):>10}"
@@ -652,8 +697,12 @@ def _render_ranking(slices: dict[str, SliceStats], records: list[dict], k: int, 
     lines += [
         "",
         f"Вклад гибрида (rrf - dense) по MRR: {slices['rrf'].mrr - slices['dense'].mrr:+.3f}",
-        f"Вклад реранкера (rerank - rrf) по MRR: {slices['rerank'].mrr - slices['rrf'].mrr:+.3f}",
     ]
+    if "rerank" in slices:
+        lift = slices["rerank"].mrr - slices["rrf"].mrr
+        lines.append(f"Вклад реранкера (rerank - rrf) по MRR: {lift:+.3f}")
+    else:
+        lines.append("Реранкер выключен (RERANK_CANDIDATES=0).")
     missed = [r for r in records if not r["out_of_corpus"] and r.get("rank_rerank") is None]
     if missed:
         lines += ["", "Нужного документа нет в топ-k:"]
@@ -661,20 +710,52 @@ def _render_ranking(slices: dict[str, SliceStats], records: list[dict], k: int, 
     return "\n".join(lines)
 
 
-def render_gate(records: list[dict], current: float) -> str:
+def _graph_gate(records: list[dict], settings) -> GateStats:
+    """Отказы при текущих настройках — обоими сигналами сразу, как в графе."""
+    stats = GateStats(settings.min_dense_score)
+    for record in records:
+        refused = refused_at(record, settings.min_dense_score, "dense_top")
+        if settings.rerank_candidates > 0:
+            refused = refused or refused_at(record, settings.rerank_threshold)
+        if record["out_of_corpus"]:
+            stats.total_out += 1
+            stats.refused_out += refused
+        else:
+            stats.total_in += 1
+            stats.answered_in += not refused
+    return stats
+
+
+def render_gates(records: list[dict], settings) -> str:
+    """Таблицы порогов по обоим сигналам — какие есть в записях."""
+    parts = []
+    if any(r.get("dense_top") is not None for r in records):
+        parts.append(
+            render_gate(records, settings.min_dense_score, key="dense_top", title="плотный косинус")
+        )
+    if any(r.get("top_score") is not None for r in records):
+        parts.append(render_gate(records, settings.rerank_threshold, title="кросс-энкодер"))
+    return "\n".join(parts)
+
+
+def render_gate(
+    records: list[dict], current: float, key: str = "top_score", title: str = "кросс-энкодер"
+) -> str:
     """Таблица порогов по частям tune/test и итог для выбранного на tune порога."""
-    tuned = choose_threshold(records)
+    thresholds = SIGNALS[key]
+    tuned = choose_threshold(records, thresholds, key=key)
     lines = [
         "",
-        "Порог отказа (доля ответов на вопросы из корпуса / доля отказов вне корпуса)",
+        f"Порог отказа, сигнал — {title} "
+        "(доля ответов на вопросы из корпуса / доля отказов вне корпуса)",
         "",
         f"{'порог':>7} {'tune: ответ':>12} {'tune: отказ':>12} {'test: ответ':>12} "
         f"{'test: отказ':>12}",
         "-" * 59,
     ]
-    for threshold in sorted({*THRESHOLDS, current}):
-        tune = gate_stats(records, threshold, "tune")
-        test = gate_stats(records, threshold, "test")
+    for threshold in sorted({*thresholds, current}):
+        tune = gate_stats(records, threshold, "tune", key=key)
+        test = gate_stats(records, threshold, "test", key=key)
         mark = []
         if threshold == current:
             mark.append("текущий")
@@ -685,8 +766,8 @@ def render_gate(records: list[dict], current: float) -> str:
             f"{_fmt(test.answer_rate):>12} {_fmt(test.refusal_rate):>12}"
             + (f"  <- {', '.join(mark)}" if mark else "")
         )
-    test = gate_stats(records, tuned, "test")
-    counts = gate_stats(records, tuned)
+    test = gate_stats(records, tuned, "test", key=key)
+    counts = gate_stats(records, tuned, key=key)
     lines += [
         "",
         f"Порог, выбранный на tune: {tuned:.2f}. На test: отвечает на "

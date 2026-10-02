@@ -28,6 +28,7 @@ from gost_rag.ingest.tables import (
     CAPTION_RE,
     RULE_DPI,
     TableRows,
+    caption_number,
     find_tables,
     table_rows,
     uses_raster_rules,
@@ -127,11 +128,8 @@ def assign_sections(blocks: list[Block]) -> None:
     остальные блоки наследуют пункт, действующий на момент их появления.
     """
     starts: list[tuple[int, str]] = []
-    for index, block in enumerate(blocks):
-        if block.kind == "text":
-            clause = extract_clause(block.text.split("\n", 1)[0])
-            if clause is not None:
-                starts.append((index, clause))
+    for index, clause in _clause_candidates(blocks):
+        starts.append((index, clause))
 
     chain = clause_chain([clause for _, clause in starts])
     opening = {starts[i][0]: starts[i][1] for i in chain}
@@ -141,38 +139,147 @@ def assign_sections(blocks: list[Block]) -> None:
         section = opening.get(index, section)
         block.section = section
 
-    _assign_table_sections(blocks)
+    _link_tables(blocks)
 
 
-#: Номер таблицы в подписи: «Таблица 1», «Т а б л и ц а 18», «Продолжение таблицы 1».
-_CAPTION_NUMBER_RE = re.compile(
-    r"^\s*(?:Т\s*а\s*б\s*л\s*и\s*ц\s*а|(?:Продолжение|Окончание)\s+табл\w*\.?)\s*(\d+)",
-    re.IGNORECASE,
+#: Заголовок списка примечаний: «Примечания:», «П р и м е ч а н и я:», OCR «П р и м с ч а н и я».
+_NOTES_HEADING_RE = re.compile(
+    r"^\s*П\s*р\s*и\s*м\s*[ес]\s*ч\s*а\s*н\s*и\s*я\s*:?\s*$", re.IGNORECASE | re.MULTILINE
 )
-#: Ссылка на таблицу в тексте: «в таблице 1», «см. табл. 3», «по таблицам 2».
-_TABLE_REF_RE = re.compile(r"\bтабл(?:\.|\w*)\s*(\d+)", re.IGNORECASE)
 
 
-def _assign_table_sections(blocks: list[Block]) -> None:
-    """Отдать таблицу пункту, который на неё ссылается, а не тому, где она напечатана.
+def _clause_candidates(blocks: list[Block]) -> list[tuple[int, str]]:
+    """Номера в начале текстовых блоков, которые могут быть пунктами.
 
-    Таблица стоит там, где ей нашлось место на странице. В ГОСТ 24705-2004
-    табл. 1 вводит п. 4.1 («приведены в таблице 1»), но печатается после
-    п. 4.2 — и по месту получала «п. 4.2». Модель честно переписывала эту
-    подпись в ответ: «таблица 1 (п. 4.2)» — правдоподобный, но чужой пункт.
-    Берётся первая ссылка до таблицы; нет ссылки — остаётся пункт по месту.
+    Нумерованные примечания под таблицей — не пункты. В ГОСТ 10549-80 под
+    табл. 1 стоят примечания 1–4, и «3. Для деталей…», «4. Допускается…»
+    выигрывали у настоящего п. 3 место в цепочке пунктов: табл. 2 и текст про
+    внутреннюю резьбу получали «п. 4». Список примечаний идёт подряд с единицы;
+    первый номер не по порядку его закрывает («4. …» после «4. …» — уже пункт).
     """
-    first_ref: dict[str, str] = {}
+    candidates: list[tuple[int, str]] = []
+    next_note: int | None = None
+    for index, block in enumerate(blocks):
+        if block.kind != "text":
+            next_note = None
+            continue
+        clause = extract_clause(block.text.split("\n", 1)[0])
+        if next_note is not None and clause == str(next_note):
+            next_note += 1
+        else:
+            next_note = None
+            if clause is not None:
+                candidates.append((index, clause))
+        if _NOTES_HEADING_RE.search(block.text):
+            next_note = 1
+    return candidates
+
+
+#: Ссылка на таблицу в тексте: «в таблице 1», «см. табл. 3», «в табл. 3, 4», «табл. 3—7».
+#: «габл.» — «т», прочитанное слоем распознавания как «г»; «3. 4» — его же запятая.
+_TABLE_REF_RE = re.compile(
+    r"\b[тг]абл(?:\.|\w*)\s*(\d+(?:\s*(?:[,.]|и|[—–-])\s*\d+)*)", re.IGNORECASE
+)
+
+
+def _ref_numbers(group: str) -> list[int]:
+    """«3, 4» -> [3, 4]; «3—7» -> [3, 4, 5, 6, 7]."""
+    numbers: list[int] = []
+    for part in re.split(r"\s*(?:[,.]|и)\s*", group):
+        bounds = [int(x) for x in re.split(r"\s*[—–-]\s*", part) if x.isdigit()]
+        if len(bounds) == 2 and 0 < bounds[1] - bounds[0] <= 20:
+            numbers.extend(range(bounds[0], bounds[1] + 1))
+        else:
+            numbers.extend(bounds[:1])
+    return numbers
+
+
+#: Сколько текста ссылки на таблицу повторять в её подписи.
+_TABLE_CONTEXT_CHARS = 400
+
+
+def _link_tables(blocks: list[Block]) -> None:
+    """Связать таблицы с текстом, который их вводит.
+
+    1. Номер. Подпись из слоя распознавания — «Таблица?», «Таблицаб»; нечитаемый
+       номер восстанавливается по порядку: новая таблица — следующая за
+       предыдущей, продолжение — та же. Подпись переписывается с верным номером.
+    2. Пункт. Таблица принадлежит пункту, который на неё ссылается, а не тому,
+       где она напечатана: в ГОСТ 24705-2004 табл. 1 вводит п. 4.1, а стоит
+       после п. 4.2 — модель писала «таблица 1 (п. 4.2)». Берётся первая
+       ссылка до таблицы; нет ссылки — остаётся пункт по месту.
+    3. Предмет. Шапка таблицы — символы «f, R, R₁», а о чём таблица, сказано в
+       тексте: «Форма и размеры проточек для внутренней метрической резьбы …
+       в табл. 2». На странице с «Продолжением табл. 2» этих слов нет, и чанк с
+       нужной строкой не находился ни по одному слову вопроса. Предложения со
+       ссылкой повторяются строкой под подписью — и при разрезании таблицы тоже.
+    """
+    first_ref: dict[int, tuple[str, str]] = {}
+    last_number = 0
     for block in blocks:
         if block.kind == "table":
-            match = _CAPTION_NUMBER_RE.match(block.text)
-            if match and match.group(1) in first_ref:
-                block.section = first_ref[match.group(1)]
+            number = _number_table(block, last_number)
+            if number is None:
+                continue
+            last_number = number
+            ref = first_ref.get(number)
+            if ref is not None:
+                block.section, context = ref
+                _insert_table_context(block, f"К п. {block.section}: {context}")
             continue
         if block.section is None:
             continue
         for ref in _TABLE_REF_RE.finditer(block.text):
-            first_ref.setdefault(ref.group(1), block.section)
+            for number in _ref_numbers(ref.group(1)):
+                if number not in first_ref:
+                    first_ref[number] = (block.section, _referencing_sentences(block.text, number))
+
+
+def _number_table(block: Block, last_number: int) -> int | None:
+    """Номер таблицы по подписи в первой строке блока; подпись — с верным номером."""
+    caption, _, rest = block.text.partition("\n")
+    parsed = caption_number(caption)
+    if parsed is None:
+        return None
+    number, continued = parsed
+    if number is None:
+        number = last_number if continued else last_number + 1
+    if number <= 0:
+        return None
+    match = CAPTION_RE.match(caption)
+    if continued:
+        # «Окончание» — тоже сведения: таблица дальше не продолжается.
+        word = "Окончание" if caption.lstrip().lower().startswith("окончание") else "Продолжение"
+        label = f"{word} табл. {number}"
+    else:
+        label = f"Таблица {number}"
+    # Остаток нечитаемого номера: «Т абли ца)» -> «)».
+    tail = caption[match.end() :].strip().lstrip(").:;,-—– ")
+    block.text = f"{label} {tail}".strip() + (f"\n{rest}" if rest else "")
+    return number
+
+
+def _referencing_sentences(text: str, number: int) -> str:
+    """Предложения блока, ссылающиеся на табл. ``number``, одной строкой."""
+    flat = re.sub(r"\s+", " ", text).strip()
+    # Номер пункта в начале — уже в «К п. N», повторять его незачем.
+    flat = re.sub(r"^\d+(?:\.\d+)*\.?\s+", "", flat)
+    sentences = re.split(r"(?<=[.;])\s+(?=[А-ЯЁA-Z])", flat)
+    picked = [
+        s
+        for s in sentences
+        if any(number in _ref_numbers(m.group(1)) for m in _TABLE_REF_RE.finditer(s))
+    ]
+    context = " ".join(picked or sentences[:1])
+    if len(context) > _TABLE_CONTEXT_CHARS:
+        context = context[:_TABLE_CONTEXT_CHARS].rsplit(" ", 1)[0] + "…"
+    return context
+
+
+def _insert_table_context(block: Block, line: str) -> None:
+    """Вставить строку контекста между подписью и шапкой таблицы."""
+    caption, _, rest = block.text.partition("\n")
+    block.text = f"{caption}\n{line}\n{rest}" if rest else f"{caption}\n{line}"
 
 
 # --------------------------------------------------------------------------- #

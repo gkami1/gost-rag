@@ -11,7 +11,7 @@ from __future__ import annotations
 from functools import lru_cache
 
 from gost_rag.config import Settings, get_settings
-from gost_rag.ingest.embed import _detect_device
+from gost_rag.ingest.embed import _detect_device, configure_torch
 from gost_rag.logging import get_logger
 from gost_rag.models import RetrievedChunk
 
@@ -27,6 +27,8 @@ class Reranker:
     def _load(self):
         if self._model is None:
             from FlagEmbedding import FlagReranker
+
+            configure_torch(self._settings)
 
             log.info("loading_reranker", model=self._settings.reranker_model, device=self._device)
             self._model = FlagReranker(
@@ -74,6 +76,33 @@ class Reranker:
             best=round(ranked[0].rerank_score or 0.0, 4),
         )
         return kept
+
+
+def select_context(
+    question: str,
+    candidates: list[RetrievedChunk],
+    reranker,
+    settings: Settings,
+) -> list[RetrievedChunk]:
+    """Фрагменты, которые уйдут в контекст LLM, — одна функция для графа и оценки.
+
+    При ``rerank_candidates = 0`` кросс-энкодер не вызывается: в контекст идут
+    первые ``rerank_top_n`` по RRF. На оценке это почти ничего не меняет в том,
+    что видит модель (нужный документ в топ-6: 25 из 25 по RRF против 24 из 25
+    после реранкера), а на CPU экономит минуты на каждом вопросе.
+    """
+    if not candidates:
+        return []
+    if settings.rerank_candidates <= 0:
+        return candidates[: settings.rerank_top_n]
+    return reranker.rerank(question, candidates[: settings.rerank_candidates])
+
+
+def passes_dense_gate(dense_top: float | None, settings: Settings) -> bool:
+    """Достаточно ли близок лучший плотный фрагмент, чтобы вообще отвечать."""
+    if settings.min_dense_score <= 0:
+        return True
+    return dense_top is not None and dense_top >= settings.min_dense_score
 
 
 @lru_cache(maxsize=1)

@@ -335,3 +335,12 @@ def test_resolve_question_without_designation_is_unconstrained():
     assert match.mentioned == []
     assert not match.only_missing
     assert match.filter is None
+
+
+def test_default_dense_gate_is_enabled():
+    """Без реранкера (или с неполным) решение №6 держится на плотном пороге.
+
+    Нулевое значение выключает проверку целиком — тот же тихий отказ от
+    решения №6, что был с RERANK_THRESHOLD=0.0.
+    """
+    assert Settings().min_dense_score > 0.0

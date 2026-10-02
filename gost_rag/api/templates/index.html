@@ -47,6 +47,7 @@
     <a href="/healthz">Состояние</a>
   </footer>
 
+  <script src="/static/sse.js"></script>
   <script>
     const form = document.getElementById("ask");
     const input = document.getElementById("q");
@@ -59,6 +60,7 @@
     const countEl = document.getElementById("src-count");
 
     let threadId = null;
+    let finished = false;
 
     document.getElementById("reset").addEventListener("click", () => {
       threadId = null;
@@ -89,44 +91,16 @@
           body: JSON.stringify({ question, thread_id: threadId }),
         });
         if (!response.ok) throw new Error("HTTP " + response.status);
-        await readStream(response.body.getReader());
+        finished = false;
+        await readStream(response.body.getReader(), handleEvent);
+        // Поток закрылся без final и без error — не оставлять «Ищу в документах…».
+        if (!finished) statusEl.textContent = "Ответ не получен: сервер закрыл соединение";
       } catch (err) {
         statusEl.textContent = "Ошибка: " + err.message;
       } finally {
         sendBtn.disabled = false;
       }
     });
-
-    // Разбор SSE вручную: fetch+POST нельзя отдать EventSource, он умеет только GET.
-    async function readStream(reader) {
-      const decoder = new TextDecoder();
-      let buffer = "";
-
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-
-        let split;
-        while ((split = buffer.indexOf("\n\n")) !== -1) {
-          const raw = buffer.slice(0, split);
-          buffer = buffer.slice(split + 2);
-          handleEvent(parseEvent(raw));
-        }
-      }
-    }
-
-    function parseEvent(raw) {
-      let name = "message";
-      const dataLines = [];
-      for (const line of raw.split("\n")) {
-        if (line.startsWith("event:")) name = line.slice(6).trim();
-        else if (line.startsWith("data:")) dataLines.push(line.slice(5).trim());
-      }
-      let data = {};
-      try { data = JSON.parse(dataLines.join("\n")); } catch (_) {}
-      return { name, data };
-    }
 
     function handleEvent({ name, data }) {
       if (name === "start") {
@@ -139,6 +113,7 @@
       } else if (name === "token") {
         answerEl.textContent += data.text;
       } else if (name === "final") {
+        finished = true;
         // Проверенный текст может отличаться от потокового: невалидные ссылки вырезаны.
         answerEl.textContent = data.answer;
         highlightUsed(data.citations || []);
@@ -147,6 +122,7 @@
           ? "Ответ не подтверждён документами корпуса"
           : warned ? "Готово — проверьте предупреждения под ответом" : "Готово";
       } else if (name === "error") {
+        finished = true;
         statusEl.textContent = data.message;
       } else if (name === "done") {
         input.value = "";

@@ -14,8 +14,20 @@ import pytest
 from gost_rag.config import Settings
 from gost_rag.ingest.chunk import ApproxTokenizer
 from gost_rag.ingest.embed import Embedding
-from gost_rag.ingest.index import count_points, ensure_collection, get_client
-from gost_rag.ingest.pipeline import append_ledger, discover_files, ingest_file, read_ledger
+from gost_rag.ingest.index import (
+    count_points,
+    ensure_collection,
+    get_client,
+    list_documents,
+    prune_missing_sources,
+)
+from gost_rag.ingest.pipeline import (
+    append_ledger,
+    discover_files,
+    index_fingerprint,
+    ingest_file,
+    read_ledger,
+)
 from gost_rag.retrieval.store import hybrid_search
 
 fitz = pytest.importorskip("fitz")
@@ -221,8 +233,8 @@ def test_edited_document_replaces_old_chunks(corpus, client, settings):
 
 def test_ledger_roundtrip(settings, corpus, client):
     report = _ingest(corpus, client, settings)
-    append_ledger(settings, report, "sha-123")
-    assert read_ledger(settings) == {str(corpus): "sha-123"}
+    append_ledger(settings, report, "sha-123", "fp-1")
+    assert read_ledger(settings) == {str(corpus): {"sha256": "sha-123", "fingerprint": "fp-1"}}
 
 
 def test_ledger_ignores_failed_entries(settings, corpus, client):
@@ -244,3 +256,55 @@ def test_document_without_text_reports_error(settings, client, tmp_path):
     assert report.chunks == 0
     assert report.error is not None
     assert "OCR" in report.error
+
+
+# --------------------------------------------------------------------------- #
+# Журнал и целостность индекса
+# --------------------------------------------------------------------------- #
+
+
+def test_fingerprint_changes_with_pipeline_settings(settings):
+    """Смена размера чанка должна переиндексировать файл, даже если он не менялся."""
+    base = index_fingerprint(settings)
+    assert index_fingerprint(settings) == base
+    assert index_fingerprint(settings.model_copy(update={"chunk_tokens": 400})) != base
+    assert index_fingerprint(settings, approx_tokens=True) != base
+
+
+def test_legacy_ledger_entry_has_no_fingerprint(settings, corpus, client):
+    report = _ingest(corpus, client, settings)
+    append_ledger(settings, report, "sha-old")
+    assert read_ledger(settings)[str(corpus)]["fingerprint"] == ""
+
+
+def test_deleted_file_is_pruned_from_index(corpus, client, settings):
+    _ingest(corpus, client, settings)
+    assert count_points(client, settings) > 0
+    corpus.unlink()
+
+    removed = prune_missing_sources(client, settings.raw_dir, settings)
+    assert removed == ["гост-14634-93"]
+    assert count_points(client, settings) == 0
+
+
+def test_prune_leaves_files_outside_scanned_root_alone(corpus, client, settings, tmp_path):
+    _ingest(corpus, client, settings)
+    corpus.unlink()
+    elsewhere = tmp_path / "other"
+    elsewhere.mkdir()
+    assert prune_missing_sources(client, elsewhere, settings) == []
+    assert count_points(client, settings) > 0
+
+
+def test_second_file_with_same_designation_does_not_wipe_first(corpus, client, settings):
+    first = _ingest(corpus, client, settings)
+    duplicate = corpus.with_name("ГОСТ 14634-93 копия.pdf")
+    duplicate.write_bytes(corpus.read_bytes())
+
+    report = _ingest(duplicate, client, settings)
+    assert report.error is not None
+    assert "уже проиндексирован" in report.error
+    # Чанки первого файла на месте.
+    assert count_points(client, settings) == first.chunks
+    [doc] = list_documents(client, settings)
+    assert doc["source_path"] == str(corpus)

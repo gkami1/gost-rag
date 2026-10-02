@@ -24,6 +24,8 @@ class GraphState(TypedDict, total=False):
     citations: list[dict[str, Any]]
     insufficient: bool
     best_score: float
+    #: Косинус лучшего плотного попадания — сигнал для отказа (решение №6).
+    dense_top: float | None
     #: Документы, названные в вопросе, которых нет в корпусе.
     missing_designations: list[str]
     #: Другие редакции отсутствующих документов, которые в корпусе есть.

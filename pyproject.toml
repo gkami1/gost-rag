@@ -61,6 +61,8 @@ packages = ["gost_rag"]
 [tool.ruff]
 line-length = 100
 target-version = "py312"
+# Прототип сравнения VLM (02.10.2026): одноразовые скрипты, в конвейер не входят.
+extend-exclude = ["eval/vlm_headers"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
